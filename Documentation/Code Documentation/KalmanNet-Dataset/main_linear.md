@@ -33,8 +33,8 @@ Documentation of python file - [[main_linear]].py
 
 #### Functioning:
 Responsible for creating a dataset of linear form.
-	Important steps involved:
-		1) An object, sys_model, of the __'SystemModel'__ class is created. The class init() method initializes the instance variables based on the values (F, q, H, r, T, T_test) passed during object creation.
-		2) __'InitSequence'__ method of class SystemModel is called with values (m1_0, m2_0). The InitSequence method initializes further instance variables based on the values passed as parameters to the method.
-		3) Data generation is started by calling the __'DataGen'__ method of [[Extended_data]] python file. Parameters passed to the method are (sys_model, dataFolderName + dataFileName, T, T_test, randomInit = False). 
-		5) __'DataLoader_GPU'__ method of [[Extended_data]] is called with parameters (dataFolderName + dataFileName) to load the data from the mentioned directory, which is then displayed finally at the end of the [[main_linear]] file.
+Important steps involved:
+ 1) An object, sys_model, of the __'SystemModel'__ class is created. The class init() method initializes the instance variables based on the values (F, q, H, r, T, T_test) passed during object creation.
+2) __'InitSequence'__ method of class SystemModel is called with values (m1_0, m2_0). The InitSequence method initializes further instance variables based on the values passed as parameters to the method.
+3) Data generation is started by calling the __'DataGen'__ method of [[Extended_data]] python file. Parameters passed to the method are (sys_model, dataFolderName + dataFileName, T, T_test, randomInit = False). 
+4) __'DataLoader_GPU'__ method of [[Extended_data]] is called with parameters (dataFolderName + dataFileName) to load the data from the mentioned directory, which is then displayed finally at the end of the [[main_linear]] file.
