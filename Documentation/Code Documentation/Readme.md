@@ -1,0 +1,1 @@
+This folder is dedicated towards code documentation. Explanation of the code in the python files, classes, methods, inputs, functioning, and outputs is documented here.

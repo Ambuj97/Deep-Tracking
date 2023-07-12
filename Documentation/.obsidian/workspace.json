@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Meeting Discussions/July 11, 2023.md",
+                "file": "Experimentation/Readme.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Meeting Discussions/July 11, 2023.md",
+                "file": "Experimentation/Readme.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Meeting Discussions/July 11, 2023.md",
+                "file": "Experimentation/Readme.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Meeting Discussions/July 11, 2023.md"
+                "file": "Experimentation/Readme.md"
               }
             }
           }
@@ -146,8 +146,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "e031c5647539b68c",
+  "active": "67c7c30bb15ef570",
   "lastOpenFiles": [
+    "Code Documentation/Readme.md",
+    "Experimentation/Readme.md",
+    "Meeting Discussions/July 11, 2023.md",
     "Code Documentation/KalmanNet-TSP Main",
     "Code Documentation/KalmanNet-Dataset",
     "Experimentation/KalmanNet Training",
@@ -156,7 +159,6 @@
     "SORT.md",
     "KalmanNet.md",
     "Kalman Filters.md",
-    "Meeting Discussions/July 11, 2023.md",
     "Code Documentation",
     "Experimentation"
   ]
