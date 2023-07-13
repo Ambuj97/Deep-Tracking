@@ -43,4 +43,4 @@ Documentation of python file - [[Extended_Data]].py
 		- fileName - a string denoting the path to the .pt file.
 		- T - number of timesteps or sequence length for a linear training case.
 	- Functioning:
-		- 
+		- It calls the __GenerateBatch__ method of the SysModel_data object with parameters number of examples = 1, T, randomInit = False.
