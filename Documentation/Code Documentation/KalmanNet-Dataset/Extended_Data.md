@@ -42,5 +42,20 @@ Documentation of python file - [[Extended_Data]].py
 		- SysModel_data - Object of class SystemModel of python file [[Linear_sysmdl]].
 		- fileName - a string denoting the path to the .pt file.
 		- T - number of timesteps or sequence length for a linear training case.
+	- Purpose:
+		- The purpose of this method is to check data generation process and save it as a torch model at the path specified.
 	- Functioning:
 		- It calls the __GenerateBatch__ method of the SysModel_data object with parameters number of examples = 1, T, randomInit = False.
+		- SysModel_data object's instance variable 'Input' is assigned to test_input variable.
+		- SysModel_data object's instance variable 'Target' is assigned to test_target variable.
+		- Finally, the two values of test_input and test_target are stored in a vector and saved as a torch model at the path (fileName) provided.
+
+2) __DataGen__:
+	- Input parameters:
+		- SysModel_data - Object of class SystemModel of python file [[Linear_sysmdl]].
+		- fileName - a string denoting the path to the .pt file.
+		- T - number of timesteps or sequence length for a linear training case.
+		- T_test - number of timesteps or sequence length for a linear testing case.
+		- randomInit - flag indication random initialization.
+	- Purpose:
+		- The purpose of this method is to generate training, cross validation, and testing dataset and save it as a torch model at the path specified.
