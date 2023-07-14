@@ -56,6 +56,33 @@ Documentation of python file - [[Extended_Data]].py
 		- fileName - a string denoting the path to the .pt file.
 		- T - number of timesteps or sequence length for a linear training case.
 		- T_test - number of timesteps or sequence length for a linear testing case.
-		- randomInit - flag indication random initialization.
+		- randomInit - flag indication random initialization, set as False.
 	- Purpose:
 		- The purpose of this method is to generate training, cross validation, and testing dataset and save it as a torch model at the path specified.
+	- Functioning:
+		- It calls the __GenerateBatch__ method of the SysModel_data object with parameters number of examples, T/T_test, randomInit = False.  Number of examples is set as either N_E or N_CV or N_T depending upon the generation of training, cross validation or testing dataset. The timesteps is set to either T (for training and cross validation) or T_test (for testing)
+		- Corresponding instance variables of the object 'Input' and 'Target' are assigned to corresponding training, cross validation, and testing input and target variables.
+		- Finally, all the training, cross validation, and testing variables are stored in a vector and saved as a torch .pt model at the specified path (fileName) provided.
+
+3) __DataLoader__:
+	- Input parameters:
+		- fileName - path at which .pt model is stored.
+	- Purpose:
+		- The purpose of this function is to load the data stored inside the .pt model onto the CPU.
+	- Functioning:
+		- Loads the data from the .pt model stored at the provided path using torch's load() method into respective training, cross validation, and testing variables.
+	- Return values:
+		- It returns a vector of all the training, cross validation, and testing input and target values.
+
+4) __DataLoader_GPU__:
+	- Input parameters:
+		- fileName - path at which .pt model is stored.
+	- Purpose:
+		- The purpose of this function is to load the data stored inside the .pt model onto the device available (stored in the 'dev' variable).
+	- Functioning:
+		- Loads the data from the .pt model stored at the provided path using torch's load() method, creates a DataLoader object and stores the values in respective training, cross validation, and testing variables.
+		- The pin_memory = False signifies that the data will not be pinned in memory. Pinning memory can improve data transfer performance, especially when using CUDA, but it might also consume additional memory.
+		- The map_location specifies the device where the data will be loaded, in this case onto the device available (stored in the 'dev' variable).
+		- The .squeeze() torch method is used to removed unwanted singleton dimensions.
+	- Return values:
+		- It returns a vector of all the training, cross validation, and testing input and target values.
