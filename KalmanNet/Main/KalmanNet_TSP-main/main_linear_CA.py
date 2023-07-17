@@ -9,7 +9,7 @@ import Simulations.config as config
 import Simulations.utils as utils
 from Simulations.Linear_CA.parameters import F_gen,F_CV,H_identity,H_onlyPos,\
    Q_gen,Q_CV,R_3,R_2,R_onlyPos,\
-   m,m_cv
+   m,m_cv, R_onlyPosBB, R_7, Q_bb, F_genbb, m_bb
 
 # Filters folder
 from Filters.KalmanFilter_test import KFTest
@@ -56,6 +56,11 @@ args.T_test = 100
 KnownRandInit_train = True # if true: use known random init for training, else: model is agnostic to random init
 KnownRandInit_cv = True
 KnownRandInit_test = True
+
+# KnownRandInit_train = False # if true: use known random init for training, else: model is agnostic to random init
+# KnownRandInit_cv = False
+# KnownRandInit_test = False
+
 args.use_cuda = True # use GPU or not
 args.n_steps = 5
 args.n_batch = 10
@@ -82,10 +87,17 @@ if(KnownRandInit_train or KnownRandInit_cv or KnownRandInit_test):
 else:
    std_feed = 1
 
-m1x_0 = torch.zeros(m) # Initial State
+# m1x_0 = torch.zeros(m) # Initial State
+# m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
+# m2x_0 = std_feed * std_feed * torch.eye(m) # Initial Covariance for feeding to filters and KNet
+# m2x_0_gen = std_gen * std_gen * torch.eye(m) # Initial Covariance for generating dataset
+# m2x_0_cv = std_feed * std_feed * torch.eye(m_cv)
+
+
+m1x_0 = torch.zeros(m_bb)
 m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
-m2x_0 = std_feed * std_feed * torch.eye(m) # Initial Covariance for feeding to filters and KNet
-m2x_0_gen = std_gen * std_gen * torch.eye(m) # Initial Covariance for generating dataset
+m2x_0 = std_feed * std_feed * torch.eye(m_bb) # Initial Covariance for feeding to filters and KNet
+m2x_0_gen = std_gen * std_gen * torch.eye(m_bb) # Initial Covariance for generating dataset
 m2x_0_cv = std_feed * std_feed * torch.eye(m_cv) # Initial Covariance for CV
 
 #############################
@@ -97,36 +109,57 @@ Train_Loss_On_AllState = True # if false: only calculate training loss on positi
 CV_model = False # if true: use CV model, else: use CA model
 
 DatafolderName = 'Simulations/Linear_CA/data/'
-DatafileName = '7x7_rq020_T100.pt'
+# DatafileName = '7x7_rq020_T100_1.pt'
+
+DatafileName = '7x7_rq020_T100_KN1.pt'
 
 
 ####################
 ### System Model ###
 ####################
 # Generation model (CA)
-sys_model_gen = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
+# sys_model_gen = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
+# sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
+sys_model_gen = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
 sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
 
 # Feed model (to KF, KalmanNet) 
+# if CV_model:
+#    H_onlyPos = torch.tensor([[1, 0]]).float()
+#    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
+#    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
+# else:
+#    sys_model = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
+#    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
+
 if CV_model:
    H_onlyPos = torch.tensor([[1, 0]]).float()
    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
 else:
-   sys_model = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
+   sys_model = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
 
 print("Start Data Gen")
 utils.DataGen(args, sys_model_gen, DatafolderName+DatafileName)
+
 print("Load Original Data")
 [train_input, train_target, cv_input, cv_target, test_input, test_target,train_init,cv_init,test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
-if CV_model:# set state as (p,v) instead of (p,v,a)
-   train_target = train_target[:,0:m_cv,:]
-   train_init = train_init[:,0:m_cv]
-   cv_target = cv_target[:,0:m_cv,:]
-   cv_init = cv_init[:,0:m_cv]
-   test_target = test_target[:,0:m_cv,:]
-   test_init = test_init[:,0:m_cv]
+
+                                                                                                                       
+# if CV_model:# set state as (p,v) instead of (p,v,a)
+#    print("Load Original Data")
+#    [train_input, train_target, cv_input, cv_target, test_input, test_target,train_init,cv_init,test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
+#    train_target = train_target[:,0:m_cv,:]
+#    train_init = train_init[:,0:m_cv]
+#    cv_target = cv_target[:,0:m_cv,:]
+#    cv_init = cv_init[:,0:m_cv]
+#    test_target = test_target[:,0:m_cv,:]
+#    test_init = test_init[:,0:m_cv]
+# else:
+#    print("Load Original Data")
+#    [train_input, train_target, cv_input, cv_target, test_input, test_target] = torch.load(DatafolderName+DatafileName, map_location=device)
+
 
 # print(train_input)
 
@@ -142,11 +175,11 @@ print("Compute Loss on All States (if false, loss on position only):", Loss_On_A
 ##############################
 ### Evaluate Kalman Filter ###
 ##############################
-print("Evaluate Kalman Filter")
-if args.randomInit_test and KnownRandInit_test:
-   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
-else: 
-   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
+# print("Evaluate Kalman Filter")
+# if args.randomInit_test and KnownRandInit_test:
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
+# else: 
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
 
 ##########################
 ### Evaluate KalmanNet ###
@@ -184,13 +217,13 @@ else:
 ####################
 ### Plot results ###
 ####################
-PlotfolderName = "Figures/Linear_CA/"
-PlotfileName0 = "TrainPVA_position.png"
-PlotfileName1 = "TrainPVA_velocity.png"
-PlotfileName2 = "TrainPVA_acceleration.png"
+# PlotfolderName = "Figures/Linear_CA/"
+# PlotfileName0 = "TrainPVA_position.png"
+# PlotfileName1 = "TrainPVA_velocity.png"
+# PlotfileName2 = "TrainPVA_acceleration.png"
 
-Plot = Plot(PlotfolderName, PlotfileName0)
-print("Plot")
-Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=0, file_name=PlotfolderName+PlotfileName0)#Position
-Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=1, file_name=PlotfolderName+PlotfileName1)#Velocity
-Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=2, file_name=PlotfolderName+PlotfileName2)#Acceleration
+# Plot = Plot(PlotfolderName, PlotfileName0)
+# print("Plot")
+# Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=0, file_name=PlotfolderName+PlotfileName0)#Position
+# Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=1, file_name=PlotfolderName+PlotfileName1)#Velocity
+# Plot.plotTraj_CA(test_target, KF_out, KNet_out, dim=2, file_name=PlotfolderName+PlotfileName2)#Acceleration

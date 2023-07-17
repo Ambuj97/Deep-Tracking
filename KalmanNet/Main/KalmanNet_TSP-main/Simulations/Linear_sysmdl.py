@@ -23,6 +23,7 @@ class SystemModel:
         ####################
         self.F = F
         self.m = self.F.size()[0]
+        # print(self.m)
         self.Q = Q
 
         #########################
@@ -30,6 +31,7 @@ class SystemModel:
         #########################
         self.H = H
         self.n = self.H.size()[0]
+        # print(self.n)
         self.R = R
 
         ################
@@ -63,6 +65,8 @@ class SystemModel:
         return torch.bmm(batched_F, x)
     
     def h(self, x):
+        # print(self.H.shape)
+        # print(x.shape)
         batched_H = self.H.to(x.device).view(1,self.H.shape[0],self.H.shape[1]).expand(x.shape[0],-1,-1)
         return torch.bmm(batched_H, x)
         

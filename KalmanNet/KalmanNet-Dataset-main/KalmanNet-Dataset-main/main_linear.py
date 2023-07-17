@@ -51,15 +51,21 @@ sys_model.InitSequence(m1_0, m2_0)
 ##############################
 ### Generate and load data ###
 ##############################
-dataFolderName = 'KalmanNet-Dataset-main/Simulations/Linear_canonical/Experiments/'
-dataFileName = '7x7_rq020_T100_1.pt' # rq are named in dB
-print("Start Data Gen")
-DataGen(sys_model, dataFolderName + dataFileName, T, T_test,randomInit=False)
+# dataFolderName = 'KalmanNet-Dataset-main/Simulations/Linear_canonical/Experiments/'
+dataFolderName = 'KalmanNet-Dataset-main/Simulations/Linear_canonical/'
+dataFileName = '2x2_rq020_T100.pt' # rq are named in dB
+# print("Start Data Gen")
+# DataGen(sys_model, dataFolderName + dataFileName, T, T_test,randomInit=False)
 print("Data Load")
 [train_input, train_target, cv_input, cv_target, test_input, test_target] = DataLoader_GPU(dataFolderName + dataFileName)
+
 print("trainset size:",train_target.size())
 print("cvset size:",cv_target.size())
 print("testset size:",test_target.size())
+
+print("trainset input size:",train_input.size())
+print("cvset input size:",cv_input.size())
+print("testset input size:",test_input.size())
 
 
 

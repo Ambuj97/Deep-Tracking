@@ -30,7 +30,7 @@ F_CV = torch.tensor([[1, delta_t_gen],
                      [0,           1]]).float()         
 
 
-F_gen = torch.tensor([[1, 0, 0, 0, delta_t_gen, 0, 0],
+F_genbb = torch.tensor([[1, 0, 0, 0, delta_t_gen, 0, 0],
                   [0, 1, 0, 0, 0, delta_t_gen, 0],
                   [0, 0, 1, 0, 0, 0, 0],
                   [0, 0, 0, 1, 0, 0, delta_t_gen],
@@ -67,3 +67,15 @@ R_3 = r2 * torch.eye(3)
 R_2 = r2 * torch.eye(2)
 
 R_onlyPos = r2
+
+
+Q_bb = q2 * torch.tensor([[1/3*delta_t_gen**3, 0, 0, 0, 1/2*delta_t_gen**2, 0, 0],
+                          [0, 1/3*delta_t_gen**3, 0 , 0, 0, 1/2*delta_t_gen**2, 0],
+                          [0, 0, 1/3*delta_t_gen**3, 0, 0, 0, 1/2*delta_t_gen**2],
+                          [0, 0, 0, 1/3*delta_t_gen**3, 0, 0, 0],
+                          [1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen, 0, 0],
+                          [0, 1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen, 0],
+                          [0, 0, 1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen]]).float()
+
+R_7 = r2 * torch.eye(7)
+R_onlyPosBB = r2

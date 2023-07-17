@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import random
 import time
-from Plot import Plot_KF
+# from Plot import Plot_KF
 
 
 class Pipeline_EKF:
@@ -278,9 +278,13 @@ class Pipeline_EKF:
         x_out_test = torch.zeros([self.N_T, SysModel.m,SysModel.T_test]).to(self.device)
 
         if MaskOnState:
+            #3x3 model
             mask = torch.tensor([True,False,False])
+            
             if SysModel.m == 2: 
                 mask = torch.tensor([True,False])
+            elif SysModel.m == 7: 
+                mask = torch.tensor([True, True, True, True, False, False, False])
 
         # MSE LOSS Function
         loss_fn = nn.MSELoss(reduction='mean')
@@ -338,11 +342,11 @@ class Pipeline_EKF:
 
         return [self.MSE_test_linear_arr, self.MSE_test_linear_avg, self.MSE_test_dB_avg, x_out_test, t]
 
-    def PlotTrain_KF(self, MSE_KF_linear_arr, MSE_KF_dB_avg):
+    # def PlotTrain_KF(self, MSE_KF_linear_arr, MSE_KF_dB_avg):
 
-        self.Plot = Plot_KF(self.folderName, self.modelName)
+    #     self.Plot = Plot_KF(self.folderName, self.modelName)
 
-        self.Plot.NNPlot_epochs(self.N_steps, MSE_KF_dB_avg,
-                                self.MSE_test_dB_avg, self.MSE_cv_dB_epoch, self.MSE_train_dB_epoch)
+    #     self.Plot.NNPlot_epochs(self.N_steps, MSE_KF_dB_avg,
+    #                             self.MSE_test_dB_avg, self.MSE_cv_dB_epoch, self.MSE_train_dB_epoch)
 
-        self.Plot.NNPlot_Hist(MSE_KF_linear_arr, self.MSE_test_linear_arr)
+    #     self.Plot.NNPlot_Hist(MSE_KF_linear_arr, self.MSE_test_linear_arr)
