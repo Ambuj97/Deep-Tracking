@@ -147,11 +147,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "67c7c30bb15ef570",
+  "active": "e031c5647539b68c",
   "lastOpenFiles": [
     "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
-    "Code Documentation/KalmanNet-Dataset/Linear_sysmdl.md",
     "Code Documentation/KalmanNet-Dataset/main_linear.md",
+    "Code Documentation/KalmanNet-Dataset/Linear_sysmdl.md",
     "Meeting Discussions/July 11, 2023.md",
     "DataGen.md",
     "DataLoader_GPU.md",
