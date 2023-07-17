@@ -17,6 +17,8 @@ def KFTest(args, SysModel, test_input, test_target, allStates=True,\
         loc = torch.tensor([True,False,False]) # for position only
         if SysModel.m == 2: 
             loc = torch.tensor([True,False]) # for position only
+        elif SysModel.m == 7: 
+            loc = torch.tensor([True, True, True, True, False, False, False]) # for position only
 
     start = time.time()
 
