@@ -89,4 +89,4 @@ Documentation of python file - [[Extended_Data]].py
 
 
 
-Note: Documentation of DecimateData, Decimate_and_perturbate_Data, getObs, Short_Traj_Split methods are remaining.
+Note: Documentation of DecimateData, Decimate_and_perturbate_Data, getObs, Short_Traj_Split methods is remaining.

@@ -80,5 +80,16 @@ Documentation of python file - [[Linear_sysmdl]].py
 				- randomInit - random initialization (default set to False)
 				- seqInit - sequence initialization (default set to False)
 				- T_test - number of timesteps or sequence length for a linear testing case (default set to 0).
+			- Purpose:
+				- The purpose of this method is to generate datasets for training, cross validation, and testing examples. For every example, sequence is generated based on the timesteps specified.
+			- Functioning:
+				- Pre-allocate empty tensors for input and target based on dimensions n and m respectively.
+				- Initialize initConditions variable with m1x_0 instance variable which is the initial condition.
+				- Loop over the size (number of examples) to create sequences based on timesteps for the number of examples.
+					- If randomInit and seqInit conditions are True, randomize the initial conditions to generate a richer dataset,.
+					- Call class method InitSequence to set initial instance variables.
+					- Call class method GenerateSequence to generate the sequence for particular training example based on the process noise matrix, observation noise matrix, and the timesteps.
+					- Finally, store the observation sequences in Input tensor initialized earlier and store the state sequences in the Target tensor initialized earlier.
 
 
+Note: Documentation of UpdateCovariance_Gain, UpdateCovariance_Matrix, sampling methods is remaining.
