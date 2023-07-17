@@ -51,8 +51,8 @@ sys_model.InitSequence(m1_0, m2_0)
 ##############################
 ### Generate and load data ###
 ##############################
-dataFolderName = 'Simulations/Linear_canonical/'
-dataFileName = '7x7_rq020_T100.pt' # rq are named in dB
+dataFolderName = 'KalmanNet-Dataset-main/Simulations/Linear_canonical/Experiments/'
+dataFileName = '7x7_rq020_T100_1.pt' # rq are named in dB
 print("Start Data Gen")
 DataGen(sys_model, dataFolderName + dataFileName, T, T_test,randomInit=False)
 print("Data Load")

@@ -96,7 +96,7 @@ Loss_On_AllState = False # if false: only calculate loss on position
 Train_Loss_On_AllState = True # if false: only calculate training loss on position
 CV_model = False # if true: use CV model, else: use CA model
 
-DatafolderName = 'Simulations/Linear_CA/data'
+DatafolderName = 'Simulations/Linear_CA/data/'
 DatafileName = '7x7_rq020_T100.pt'
 
 
