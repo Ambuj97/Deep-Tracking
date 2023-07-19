@@ -7,6 +7,11 @@ import torch
 import torch.nn as nn
 import random
 import time
+from torch.utils.tensorboard import SummaryWriter
+import sys
+
+summaryWriter = SummaryWriter()
+
 # from Plot import Plot_KF
 
 
@@ -90,6 +95,10 @@ class Pipeline_EKF:
             y_training_batch = torch.zeros([self.N_B, SysModel.n, SysModel.T]).to(self.device)
             train_target_batch = torch.zeros([self.N_B, SysModel.m, SysModel.T]).to(self.device)
             x_out_training_batch = torch.zeros([self.N_B, SysModel.m, SysModel.T]).to(self.device)
+
+            # summaryWriter.add_graph(self.model, y_training_batch)
+            # summaryWriter.close()
+
             if self.args.randomLength:
                 MSE_train_linear_LOSS = torch.zeros([self.N_B])
                 MSE_cv_linear_LOSS = torch.zeros([self.N_CV])
@@ -172,6 +181,8 @@ class Pipeline_EKF:
             # dB Loss
             self.MSE_train_linear_epoch[ti] = MSE_trainbatch_linear_LOSS.item()
             self.MSE_train_dB_epoch[ti] = 10 * torch.log10(self.MSE_train_linear_epoch[ti])
+
+            summaryWriter.add_scalar('Training MSE (in dB)', self.MSE_train_dB_epoch[ti], global_step = ti)
 
             ##################
             ### Optimizing ###
@@ -260,7 +271,14 @@ class Pipeline_EKF:
                 print("diff MSE Training :", d_train, "[dB]", "diff MSE Validation :", d_cv, "[dB]")
 
             print("Optimal idx:", self.MSE_cv_idx_opt, "Optimal :", self.MSE_cv_dB_opt, "[dB]")
+        
+        # print(self.MSE_train_linear_epoch)
+        # print(self.MSE_train_dB_epoch)
 
+        # print(self.MSE_cv_linear_epoch)
+        # print(self.MSE_cv_dB_epoch)
+
+        summaryWriter.close()
         return [self.MSE_cv_linear_epoch, self.MSE_cv_dB_epoch, self.MSE_train_linear_epoch, self.MSE_train_dB_epoch]
 
     def NNTest(self, SysModel, test_input, test_target, path_results, MaskOnState=False,\

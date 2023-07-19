@@ -23,6 +23,7 @@ from Pipelines.Pipeline_EKF import Pipeline_EKF as Pipeline
 # Plot.py file
 from Plot import Plot_KF as Plot
 
+
 ################
 ### Get Time ###
 ################
@@ -87,18 +88,18 @@ if(KnownRandInit_train or KnownRandInit_cv or KnownRandInit_test):
 else:
    std_feed = 1
 
-# m1x_0 = torch.zeros(m) # Initial State
-# m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
-# m2x_0 = std_feed * std_feed * torch.eye(m) # Initial Covariance for feeding to filters and KNet
-# m2x_0_gen = std_gen * std_gen * torch.eye(m) # Initial Covariance for generating dataset
-# m2x_0_cv = std_feed * std_feed * torch.eye(m_cv)
-
-
-m1x_0 = torch.zeros(m_bb)
+m1x_0 = torch.zeros(m) # Initial State
 m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
-m2x_0 = std_feed * std_feed * torch.eye(m_bb) # Initial Covariance for feeding to filters and KNet
-m2x_0_gen = std_gen * std_gen * torch.eye(m_bb) # Initial Covariance for generating dataset
-m2x_0_cv = std_feed * std_feed * torch.eye(m_cv) # Initial Covariance for CV
+m2x_0 = std_feed * std_feed * torch.eye(m) # Initial Covariance for feeding to filters and KNet
+m2x_0_gen = std_gen * std_gen * torch.eye(m) # Initial Covariance for generating dataset
+m2x_0_cv = std_feed * std_feed * torch.eye(m_cv)
+
+
+# m1x_0 = torch.zeros(m_bb)
+# m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
+# m2x_0 = std_feed * std_feed * torch.eye(m_bb) # Initial Covariance for feeding to filters and KNet
+# m2x_0_gen = std_gen * std_gen * torch.eye(m_bb) # Initial Covariance for generating dataset
+# m2x_0_cv = std_feed * std_feed * torch.eye(m_cv) # Initial Covariance for CV
 
 #############################
 ###  Dataset Generation   ###
@@ -109,36 +110,36 @@ Train_Loss_On_AllState = True # if false: only calculate training loss on positi
 CV_model = False # if true: use CV model, else: use CA model
 
 DatafolderName = 'Simulations/Linear_CA/data/'
-# DatafileName = '7x7_rq020_T100_1.pt'
+DatafileName = 'decimated_dt1e-2_T100_r0_randnInit.pt'
 
-DatafileName = '7x7_rq020_T100_KN1.pt'
+# DatafileName = '7x7_rq020_T100_KN1.pt'
 
 
 ####################
 ### System Model ###
 ####################
 # Generation model (CA)
-# sys_model_gen = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
-# sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
-sys_model_gen = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
+sys_model_gen = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
 sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
+# sys_model_gen = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
+# sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
 
 # Feed model (to KF, KalmanNet) 
-# if CV_model:
-#    H_onlyPos = torch.tensor([[1, 0]]).float()
-#    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
-#    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
-# else:
-#    sys_model = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
-#    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
-
 if CV_model:
    H_onlyPos = torch.tensor([[1, 0]]).float()
    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
 else:
-   sys_model = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
+   sys_model = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
+
+# if CV_model:
+#    H_onlyPos = torch.tensor([[1, 0]]).float()
+#    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
+#    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
+# else:
+#    sys_model = SystemModel(F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test)
+#    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
 
 print("Start Data Gen")
 utils.DataGen(args, sys_model_gen, DatafolderName+DatafileName)

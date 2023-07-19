@@ -1,0 +1,28 @@
+
+#### Setting 1:
+- Dataset Filename: decimated_dt1e-2_T100_r0_randnInit.pt
+- Experimental setting:
+	- args.N_E = 1000
+	- args.N_CV = 100
+	- args.N_T = 200
+	- offset = 0
+	- args.randomInit_train = True
+	- args.randomInit_cv = True
+	- args.randomInit_test = True
+	- args.T = 100
+	- args.T_test = 100
+	- KnownRandInit_train = True
+	- KnownRandInit_cv = True
+	- KnownRandInit_test = True
+	- args.use_cuda = True
+	- margs.n_steps = 500
+	- args.n_batch = 10
+	- args.lr = 1e-4
+	- args.wd = 1e-4
+- Results:
+	- Traditional Kalman Filter:
+		- MSE LOSS: tensor(-22.1722) [dB]
+		- STD: tensor(3.4843) [dB]
+	- KalmanNet:
+		- KNet-MSE Test: tensor(-3.9160) [dB]
+		- KNet-STD Test: tensor(3.3188) [dB]

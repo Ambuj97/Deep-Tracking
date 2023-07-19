@@ -40,14 +40,14 @@ F_genbb = torch.tensor([[1, 0, 0, 0, delta_t_gen, 0, 0],
 
 # Full observation
 #7
-# H_identity = torch.eye(3)
+H_identity = torch.eye(3)
 # Observe only the postion
 #1x7
-# H_onlyPos = torch.tensor([[1, 0, 0]]).float()
+H_onlyPos = torch.tensor([[1, 0, 0]]).float()
 
 
-H_identity = torch.eye(7)
-H_onlyPos = torch.tensor([[1, 1, 1, 1, 0, 0, 0]]).float()
+# H_identity = torch.eye(7)
+# H_onlyPos = torch.tensor([[1, 1, 1, 1, 0, 0, 0]]).float()
 
 ###############################################
 ### process noise Q and observation noise R ###
