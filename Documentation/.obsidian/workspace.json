@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Experimentation/KalmanNet Training/Reference Point.md",
+                "file": "Meeting Discussions/July 19, 2023.md",
                 "mode": "source",
                 "backlinks": true,
                 "source": false
@@ -86,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Experimentation/KalmanNet Training/Reference Point.md",
+                "file": "Meeting Discussions/July 19, 2023.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Experimentation/KalmanNet Training/Reference Point.md",
+                "file": "Meeting Discussions/July 19, 2023.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Experimentation/KalmanNet Training/Reference Point.md"
+                "file": "Meeting Discussions/July 19, 2023.md"
               }
             }
           }
@@ -149,13 +149,14 @@
   },
   "active": "67c7c30bb15ef570",
   "lastOpenFiles": [
-    "Experimentation/KalmanNet Training/July 17, 2023.md",
+    "Meeting Discussions/July 11, 2023.md",
+    "Meeting Discussions/July 19, 2023.md",
     "Experimentation/KalmanNet Training/Reference Point.md",
+    "Experimentation/KalmanNet Training/July 17, 2023.md",
     "Code Documentation/KalmanNet-Dataset/Linear_sysmdl.md",
     "Code Documentation/KalmanNet-Dataset/main_linear.md",
     "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
     "Experimentation/KalmanNet Dataset Creation/July 17, 2023.md",
-    "Meeting Discussions/July 11, 2023.md",
     "DataGen.md",
     "DataLoader_GPU.md",
     "Extended_data.md",
