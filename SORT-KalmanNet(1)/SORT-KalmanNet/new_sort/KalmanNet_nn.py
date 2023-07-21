@@ -12,7 +12,7 @@ class KalmanNetNN(torch.nn.Module):
     ###################
     def __init__(self):
         super().__init__()
-        self.device = torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     #############
     ### Build ###
@@ -108,7 +108,7 @@ class KalmanNetNN(torch.nn.Module):
     ###########################
     def InitSequence(self, M1_0):
         
-        self.device = torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         self.m1x_prior = M1_0.to(self.device,non_blocking = True)
 

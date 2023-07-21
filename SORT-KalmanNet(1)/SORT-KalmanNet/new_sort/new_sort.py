@@ -135,7 +135,7 @@ class KalmanBoxTracker(object):
     self.KNet_model.Build(KalmanBoxTracker.sys_model)
     self.KNet_Pipeline.setModel(self.KNet_model)
     
-    self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt", map_location=torch.device("cuda:5" if torch.cuda.is_available() else "cpu"))
+    self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
     self.extra_dim = np.zeros((3,1))
     #self.x = convert_bbox_to_z(bbox) 
@@ -148,7 +148,7 @@ class KalmanBoxTracker(object):
     self.hits = 0
     self.hit_streak = 0
     self.age = 0
-    self.device = torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+    self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
   def update(self,bbox):
       """
@@ -239,7 +239,7 @@ class Sort(object):
     self.iou_threshold = iou_threshold
     self.trackers = []
     self.frame_count = 0
-    self.device = torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+    self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
   def update(self, dets=np.empty((0, 5))):
     """
@@ -334,8 +334,10 @@ if __name__ == '__main__':
 
   if not os.path.exists('output'):
     os.makedirs('output')
-  pattern = os.path.join(args.seq_path, phase, '*', 'det', 'det.txt')
+  pattern = os.path.join('SORT-KalmanNet/new_sort', args.seq_path, phase, 'KITTI-13', 'det', 'det.txt')
+  # print(pattern)
   for seq_dets_fn in glob.glob(pattern):
+    print("KITTI-13")
     mot_tracker = Sort(max_age=args.max_age, 
                        min_hits=args.min_hits,
                        iou_threshold=args.iou_threshold) #create instance of the SORT tracker
@@ -376,7 +378,7 @@ if __name__ == '__main__':
           plt.draw()
           ax1.cla()
 
-  print("Total Tracking took: %.3f seconds for %d frames or %.1f FPS" % (total_time, total_frames, total_frames / total_time))
+  # print("Total Tracking took: %.3f seconds for %d frames or %.1f FPS" % (total_time, total_frames, total_frames / total_time))
 
   if(display):
     print("Note: to get real runtime results run without the option: --display")
