@@ -183,7 +183,7 @@ def DataLoader(fileName):
     return [training_input, training_target, cv_input, cv_target, test_input, test_target]
 
 def DataLoader_GPU(fileName):
-    [training_input, training_target, cv_input, cv_target, test_input, test_target] = torch.utils.data.DataLoader(torch.load(fileName),pin_memory = False)
+    [training_input, training_target, cv_input, cv_target, test_input, test_target, _, _, _] = torch.utils.data.DataLoader(torch.load(fileName),pin_memory = False)
     training_input = training_input.squeeze().to(dev)
     training_target = training_target.squeeze().to(dev)
     cv_input = cv_input.squeeze().to(dev)

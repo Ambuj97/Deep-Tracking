@@ -14,7 +14,7 @@ class Pipeline_KF:
         self.modelName = modelName
         self.modelFileName = self.folderName + "model_" + self.modelName 
         self.PipelineName = self.folderName + "pipeline_" + self.modelName 
-        self.device = torch.device("cuda:5" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def save(self):
         torch.save(self, self.PipelineName)
@@ -59,7 +59,7 @@ class Pipeline_KF:
         ### Epochs ###
         ##############
 
-        self.MSE_cv_dB_opt = 1000
+        self.MSE_cv_dB_opt = 10
         self.MSE_cv_idx_opt = 0
 
         for ti in range(0, self.N_Epochs):
@@ -165,8 +165,8 @@ class Pipeline_KF:
         # MSE LOSS Function
         # loss_fn = nn.MSELoss(reduction='mean')
 
-        self.model = torch.load(self.modelFileName, map_location=torch.device("cuda:5" if torch.cuda.is_available() else "cpu"))
-
+        self.model = torch.load(self.modelFileName, map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        print(self.model)
         self.model.eval()
 
         torch.no_grad()

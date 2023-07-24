@@ -31,7 +31,6 @@ class SystemModel:
         #########################
         self.H = H
         self.n = self.H.size()[0]
-        # print(self.n)
         self.R = R
 
         ################
@@ -201,6 +200,12 @@ class SystemModel:
             for i in range(0, size):
                 # Generate Sequence
                 self.GenerateSequence(self.Q, self.R, T_tensor[i].item())
+                # print(self.y)
+                # print('\n')
+                # print(self.x)
+                # print('\n')
+                # print(T_tensor[i].item())
+                # print('\n\n\n')
                 # Training sequence input
                 self.Input[i, :, 0:T_tensor[i].item()] = self.y             
                 # Training sequence output
@@ -209,7 +214,10 @@ class SystemModel:
                 self.lengthMask[i, 0:T_tensor[i].item()] = True
 
         else:
+            # print('line 222 - else')
             # Allocate Empty Array for Input
+            # print(size, self.n, T)
+            # print(size, self.m, T)
             self.Input = torch.empty(size, self.n, T)
             # Allocate Empty Array for Target
             self.Target = torch.empty(size, self.m, T)
@@ -260,6 +268,7 @@ class SystemModel:
                 ########################
                 ### Squeeze to Array ###
                 ########################
+
 
                 # Save Current State to Trajectory Array
                 self.Target[:, :, t] = torch.squeeze(xt,2)

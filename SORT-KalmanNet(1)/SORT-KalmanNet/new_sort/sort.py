@@ -254,7 +254,7 @@ class Sort(object):
     i = len(self.trackers)
     for trk in reversed(self.trackers):
         d = trk.get_state()[0]
-        print ('get state ', d)
+        # print ('get state ', d)
         if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
           ret.append(np.concatenate((d,[trk.id+1])).reshape(1,-1)) # +1 as MOT benchmark requires positive
         i -= 1
@@ -269,7 +269,7 @@ def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='SORT demo')
     parser.add_argument('--display', dest='display', help='Display online tracker output (slow) [False]',action='store_true')
-    parser.add_argument("--seq_path", help="Path to detections.", type=str, default='data')
+    parser.add_argument("--seq_path", help="Path to detections.", type=str, default='SORT-KalmanNet/new_sort/data')
     parser.add_argument("--phase", help="Subdirectory in seq_path.", type=str, default='train')
     parser.add_argument("--max_age", 
                         help="Maximum number of frames to keep alive a track without associated detections.", 
@@ -299,22 +299,26 @@ if __name__ == '__main__':
 
   if not os.path.exists('output'):
     os.makedirs('output')
-  pattern = os.path.join(args.seq_path, phase, '*', 'det', 'det.txt')
+  pattern = os.path.join(args.seq_path, phase, 'KITTI-13', 'det', 'det.txt')
   for seq_dets_fn in glob.glob(pattern):
+    print('304 - ', seq_dets_fn)
     mot_tracker = Sort(max_age=args.max_age, 
                        min_hits=args.min_hits,
                        iou_threshold=args.iou_threshold) #create instance of the SORT tracker
     seq_dets = np.loadtxt(seq_dets_fn, delimiter=',')
+    # print('309 - ', seq_dets)
     seq = seq_dets_fn[pattern.find('*'):].split(os.path.sep)[0]
+    print('311 - ', seq)
     
     with open(os.path.join('output', '%s.txt'%(seq)),'w') as out_file:
       print("Processing %s."%(seq))
       for frame in range(int(seq_dets[:,0].max())):
-          
-  
         frame += 1 #detection and frame numbers begin at 1
+        print(frame)
         dets = seq_dets[seq_dets[:, 0]==frame, 2:7]
+        print(dets)
         dets[:, 2:4] += dets[:, 0:2] #convert to [x1,y1,w,h] to [x1,y1,x2,y2]
+        print(dets)
         total_frames += 1
 
         if(display):

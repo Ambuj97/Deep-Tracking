@@ -102,7 +102,7 @@ class KalmanBoxTracker(object):
   """
   count = 0
   dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
-  modelFolder = 'KNet' + '/'
+  modelFolder = 'SORT-KalmanNet/new_sort/KNet' + '/'
   today = datetime.today()
   now = datetime.now()
   strToday = today.strftime("%m.%d.%y")
@@ -129,7 +129,7 @@ class KalmanBoxTracker(object):
     Initialises a tracker using initial bounding box.
     """
     #define constant velocity model
-    self.KNet_Pipeline = Pipeline_KF(KalmanBoxTracker.strTime, "KNet", "KNet_"+ KalmanBoxTracker.dataFileName[0])
+    self.KNet_Pipeline = Pipeline_KF(KalmanBoxTracker.strTime, "SORT-KalmanNet/new_sort/KNet", "KNet_"+ KalmanBoxTracker.dataFileName[0])
     self.KNet_Pipeline.setssModel(KalmanBoxTracker.sys_model)
     self.KNet_model = KalmanNetNN()
     self.KNet_model.Build(KalmanBoxTracker.sys_model)
@@ -140,7 +140,7 @@ class KalmanBoxTracker(object):
     self.extra_dim = np.zeros((3,1))
     #self.x = convert_bbox_to_z(bbox) 
     self.x = np.concatenate((convert_bbox_to_z(bbox), self.extra_dim), axis=0)
-    
+
     self.time_since_update = 0
     self.id = KalmanBoxTracker.count
     KalmanBoxTracker.count += 1

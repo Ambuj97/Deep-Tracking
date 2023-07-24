@@ -63,10 +63,10 @@ sys_model.InitSequence(m1_0, m2_0)
 ###################################
 ### Data Loader (Generate Data) ###
 ###################################
-dataFolderName = 'Simulations/Linear_canonical/H=I' + '/'
+dataFolderName = 'SORT-KalmanNet/KalmanNet_TSP/Simulations/Linear_canonical/H=I' + '/'
 #dataFileName = ['2x2_rq-1010_T100.pt','2x2_rq020_T100.pt','2x2_rq1030_T100.pt','2x2_rq2040_T100.pt','2x2_rq3050_T100.pt']
 # print("Start Data Gen")
-dataFileName = ['synthetic_bb.pt']
+dataFileName = ['7x7_rq020_T100_KN2.pt']
 # DataGen(sys_model, dataFolderName + dataFileName[index], T, T_test,randomInit=False)
 print("Data Load")
 [train_input, train_target, cv_input, cv_target, test_input, test_target] = DataLoader_GPU(dataFolderName + dataFileName[0])
@@ -75,6 +75,10 @@ print("Data Load")
 print("trainset size:",train_target.size())
 print("cvset size:",cv_target.size())
 print("testset size:",test_target.size())
+print("trainset input size:",train_input.size())
+print("cvset input size:",cv_input.size())
+print("testset input size:",test_input.size())
+
 
 ##############################
 ### Evaluate Kalman Filter ###
@@ -86,7 +90,7 @@ print("Evaluate Kalman Filter True")
 
 
 
-DatafolderName = 'Filters/Linear' + '/'
+DatafolderName = 'SORT-KalmanNet/KalmanNet_TSP/Filters/Linear' + '/'
 DataResultName = 'KF_'+ dataFileName[0]
 torch.save({
            'MSE_KF_linear_arr': MSE_KF_linear_arr,
@@ -100,8 +104,8 @@ torch.save({
 ##################
 print("Start KNet pipeline")
 print("KNet with full model info")
-modelFolder = 'KNet' + '/'
-KNet_Pipeline = Pipeline_KF(strTime, "KNet", "KNet_"+ dataFileName[0])
+modelFolder = 'SORT-KalmanNet/KalmanNet_TSP/KNet' + '/'
+KNet_Pipeline = Pipeline_KF(strTime, "SORT-KalmanNet/KalmanNet_TSP/KNet", "KNet_"+ dataFileName[0])
 KNet_Pipeline.setssModel(sys_model)
 KNet_model = KalmanNetNN()
 KNet_model.Build(sys_model)
