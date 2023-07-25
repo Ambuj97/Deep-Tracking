@@ -12,7 +12,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 #### Classes:
 1) SystemModel:
 	1) Methods:
-		1) init():
+		1) __init()__:
 			- Input parameters:
 				- F - state evolution matrix.
 				- q - process noise.
@@ -32,7 +32,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 				- If prior_Q value is None, it is set to an identity tensor of order m, else it is set to the value passed in the parameter.
 				- If prior_Sigma value is None, it is set to a tensor of zeroes of order mxn, else it is set to the value passed in the parameter.
 				- If prior_S value is None, it is set to an identity tensor of order n, else it is set to the value passed in the parameter.
-		2) f():
+		2) __f()__:
 			- Input parameters:
 				- x - the matrix storing previous posteriori state estimates.
 			- Purpose:
@@ -41,7 +41,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 				- It returns the matrix multiplication between instance variable 'F' and x matrix.
 			- Return values:
 				- It returns the priori state estimate.
-		3) h():
+		3) __h()__:
 			- Input parameters:
 				- x - the matrix storing priori state estimates.
 			- Purpose:
@@ -50,7 +50,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 				- It returns the matrix multiplication between instance variable 'H' and x matrix.
 			- Return values:
 				- It returns the moments of the observations.
-		4) InitSequence():
+		4) __InitSequence()__:
 			- Input parameters:
 				- m1x_0 - initial state
 				- m2x_0 - ??
@@ -58,7 +58,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 				- The purpose of this method is to initialize the sequence as it begins by initializing some important instance variables.
 			- Functioning:
 				- It assigns the values to instance variables m1x_0, x_prev, and m2x_0 based on the parameters passed to the method.
-		5) GenerateSequence():
+		5) __GenerateSequence()__:
 			- Input parameters:
 				- Q_gen - process noise matrix
 				- R_gen - observation noise matrix
@@ -73,7 +73,7 @@ Documentation of python file - [[Linear_sysmdl]].py
 					- Second step inside the loop is to predict the observation value and add multivariate normal noise to the prediction if the observation noise, r, is non zero.
 					- Current state and current observation are saved to the empty tensors initialized earlier, at the timestep index.
 					- Finally, current state, xt, is saved to previous state, x_prev for the next iteration.
-		6) GenerateBatch():
+		6) __GenerateBatch()__:
 			- Input parameters:
 				- size - size of the batch (size/number of examples for training, cross validation, and testing)
 				- T - number of timesteps or sequence length for a linear training case.

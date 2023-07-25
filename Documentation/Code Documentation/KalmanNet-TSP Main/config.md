@@ -6,7 +6,7 @@ Documentation of python file - [[config]].py
 
 
 #### Methods:
-1) general_settings():
+1) __general_settings()__:
 	- Purpose:
 		- The purpose of this method is to set the dataset settings, training settings, Kalman net settings for the simulation.
 	- Functioning:

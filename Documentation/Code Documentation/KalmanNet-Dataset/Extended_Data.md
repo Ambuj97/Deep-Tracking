@@ -37,7 +37,7 @@ Documentation of python file - [[Extended_Data]].py
 
 
 #### Methods:
-1) __DataGen_True__:
+1) __DataGen_True()__:
 	-  Input parameters:
 		- SysModel_data - Object of class SystemModel of python file [[Linear_sysmdl]].
 		- fileName - a string denoting the path to the .pt file.
@@ -50,7 +50,7 @@ Documentation of python file - [[Extended_Data]].py
 		- SysModel_data object's instance variable 'Target' is assigned to test_target variable.
 		- Finally, the two values of test_input and test_target are stored in a vector and saved as a torch model at the path (fileName) provided.
 
-2) __DataGen__:
+2) __DataGen()__:
 	- Input parameters:
 		- SysModel_data - Object of class SystemModel of python file [[Linear_sysmdl]].
 		- fileName - a string denoting the path to the .pt file.
@@ -64,7 +64,7 @@ Documentation of python file - [[Extended_Data]].py
 		- Corresponding instance variables of the object 'Input' and 'Target' are assigned to corresponding training, cross validation, and testing input and target variables.
 		- Finally, all the training, cross validation, and testing variables are stored in a vector and saved as a torch .pt model at the specified path (fileName) provided.
 
-3) __DataLoader__:
+3) __DataLoader()__:
 	- Input parameters:
 		- fileName - path at which .pt model is stored.
 	- Purpose:
@@ -74,7 +74,7 @@ Documentation of python file - [[Extended_Data]].py
 	- Return values:
 		- It returns a vector of all the training, cross validation, and testing input and target values.
 
-4) __DataLoader_GPU__:
+4) __DataLoader_GPU()__:
 	- Input parameters:
 		- fileName - path at which .pt model is stored.
 	- Purpose:
