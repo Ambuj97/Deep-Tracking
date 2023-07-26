@@ -78,7 +78,7 @@ else:
     device = torch.device('cpu')
     print("Using CPU")
 
-if(args.randomInit_train or args.randomInit_cv or args.args.randomInit_test):
+if(args.randomInit_train or args.randomInit_cv or args.randomInit_test):
    std_gen = 1
 else:
    std_gen = 0
