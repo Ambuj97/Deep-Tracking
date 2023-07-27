@@ -17,7 +17,7 @@ Documentation of python file - [[main_linear_CA]].py
 8) Plot_KF class from [[Plot]] python file.
 
 
-#### Variable Declarations:
+#### Variable Declarations and Definitions:
 1) today - current date
 2) now - current time
 3) strToday - formatted date in string
@@ -62,3 +62,21 @@ Documentation of python file - [[main_linear_CA]].py
 
 36) DatafolderName - path to the data folder
 37) DatafileName - file name of the pytorch model
+
+38) sys_model_gen - object of the class SystemModel imported from [[Linear_sysmdl]] python file
+39) H_onlyPos - a tensor of order 2, defining the observation matrix considering position only
+40) sys_model - another object of the class SystemModel imported from [[Linear_sysmdl]] python file
+
+
+#### Purpose:
+[[main_linear_CA]].py file is designed to create a linear dataset of constant velocity or constant acceleration.
+
+
+#### Functioning:
+Important steps involved:
+1) Initialization of configuration variables/arguments mentioned under variables section.
+2) Initialization of state variables, covariance matrices, and other dataset generation variables mentioned under the variables section.
+3) An object, sys_model_gen, of the __'SystemModel'__ class is created. The class init() method initializes the instance variables based on the values (F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test) passed during object creation. __'InitSequence'__ method of class SystemModel is called with values (m1x_0, m2x_0_gen). The InitSequence method initializes further instance variables based on the values passed as parameters to the method.
+4) If constant velocity model is used, i.e. CV_model is set to True, sys_model object of the __'SystemModel'__ class is created with class init() method initializing the instance variables based on the values (F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test) passed during object creation. __'InitSequence'__ method of class SystemModel is called with values (m1x_0_cv, m2x_0_cv). The InitSequence method initializes further instance variables based on the values passed as parameters to the method.
+	Else, sys_model object of the __'SystemModel'__ class is created with class init() method initializing the instance variables based on the values (F_genbb, Q_bb, H_onlyPos, R_onlyPosBB, args.T, args.T_test) passed during object creation. __'InitSequence'__ method of class SystemModel is called with values (m1x_0, m2x_0). The InitSequence method initializes further instance variables based on the values passed as parameters to the method.
+5) __DataGen()__ method of [[utils]] python file is called to generate training, cross-validation, and testing input, target, and init datasets. Parameters passed to the method are (args, sys_model_gen, DatafolderName+DatafileName) where args
