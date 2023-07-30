@@ -75,5 +75,13 @@ Documentation of python file - [[Linear_KF]].py
 				- self.m2x_0_batch is set to m2x_0_batch parameter received.
 		1) __GenerateBatch()__:
 			- Input parameters:
+				- y - testing input features
 			- Purpose:
+				- The purpose of this method is to generate batched state evolution and observation matrices and carry out the Kalman filtering process in a batched manner
 			- Functioning:
+				- The first step is to load the test input tensor on the device specified in self.device, set self.batch_size as the batch size mentioned in the first dimension of the input y, and set the sequence length, T, as the sequence length mentioned in the third dimension of the input y.
+				- The next step is to create batched state evolution matrix, self.batched_F and batched observation matrix, self.batched_H from the instance variables of self.F and self.H respectively by reshaping them using view() and expanding their first dimensions based on self.batch_size.
+				- Along with these, transpose of the batched matrices self.batched_F_T and self.batched_H_T are also created using torch.transpose() along the first and second dimensions.
+				- The next step is to allocate arrays for 1st and 2nd order moments using zero padding.
+				- For initial time step, t = 0, the initial 1st and 2nd order posteriori moments are assigned to self.m1x_posterior and self.m2x_posterior using instance variables self.m1x_0_batch and self.m2x_0_batch respectively.
+				- Finally, generation is done in a batched manner by looping over the sequence length. For every sequence, the test input is stored in yt, which is a 3 dimensional tensor created by slicing the y tensor for the current sequence and then adding a 3rd dimension at the end using torch.unsqueeze(). The class method Update() is called by passing yt as the parameter and the returned values are stored in xt and sigmat.<br>The returned values are stored in instance variables self.x and self.sigma respectively for the time sequence.
