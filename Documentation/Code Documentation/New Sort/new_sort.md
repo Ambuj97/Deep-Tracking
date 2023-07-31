@@ -32,9 +32,13 @@ Documentation of python file - [[new_sort]].py
 #### Methods:
 1) __linear_assignment()__:
 	1) Input parameters:
+		- cost_matrix - matrix containing Intersection of Union overlap between the detected bounding box and tracked bounding box
 	2) Purpose:
+		- The purpose of this method is to solve the linear assignment problem. The linear assignment problem is a combinatorial optimization problem that aims to find the optimal assignment of elements from two sets while minimizing the total cost of assignments.
 	3) Functioning:
-	4) Return values:
+		- The first step is to add a try except block.
+		- Inside the try block, library lap is imported. lapjv function is called with cost_matrix passed as the parameter. The lapjv function solves the linear sum assignment problem using the Jonker-Volgenant algorithm and returns three values: a dummy variable, an array x, and an array y.
+	1) Return values:
 2) __iou_batch()__:
 	1) Input parameters:
 	2) Purpose:
@@ -55,7 +59,16 @@ Documentation of python file - [[new_sort]].py
 	2) Purpose:
 	3) Functioning:
 	4) Return values:
-6) __main__:
+6) __parse_args__():
+	1) Purpose:
+	2) Functioning:
+	3) Return values:
+7) __main__:
 	1) Variable Declarations and Definitions:
 	2) Purpose:
 	3) Functioning:
+
+
+#### Classes:
+1) KalmanBoxTracker:
+2) Sort:
