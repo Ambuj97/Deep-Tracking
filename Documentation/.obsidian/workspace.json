@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Code Documentation/KalmanNet-TSP Main/Linear_KF.md",
+                "file": "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Code Documentation/KalmanNet-TSP Main/Linear_KF.md",
+                "file": "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Code Documentation/KalmanNet-TSP Main/Linear_KF.md",
+                "file": "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Code Documentation/KalmanNet-TSP Main/Linear_KF.md"
+                "file": "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md"
               }
             }
           }
@@ -146,23 +146,23 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "e031c5647539b68c",
+  "active": "67c7c30bb15ef570",
   "lastOpenFiles": [
-    "Code Documentation/KalmanNet-TSP Main/Linear_sysmdl.md",
     "Code Documentation/KalmanNet-TSP Main/Linear_KF.md",
-    "Code Documentation/KalmanNet-Dataset/Linear_sysmdl.md",
+    "Code Documentation/KalmanNet-TSP Main/KalmanFilter_test.md",
+    "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
+    "Meeting Discussions/July 19, 2023.md",
+    "Code Documentation/KalmanNet-TSP Main/Linear_sysmdl.md",
+    "Code Documentation/KalmanNet-TSP Main/Pipeline_EKF.md",
+    "Code Documentation/KalmanNet-TSP Main/utils.md",
+    "Code Documentation/KalmanNet-TSP Main/Plot.md",
     "Code Documentation/KalmanNet-TSP Main/parameters.md",
+    "Code Documentation/KalmanNet-Dataset/Linear_sysmdl.md",
     "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
     "Code Documentation/KalmanNet-Dataset/main_linear.md",
     "Code Documentation/KalmanNet-TSP Main/main_linear_CA.md",
-    "Code Documentation/KalmanNet-TSP Main/KalmanFilter_test.md",
     "Code Documentation/KalmanNet-TSP Main/config.md",
-    "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
-    "Code Documentation/KalmanNet-TSP Main/utils.md",
-    "Code Documentation/KalmanNet-TSP Main/Pipeline_EKF.md",
-    "Meeting Discussions/July 19, 2023.md",
     "Code Documentation/Readme.md",
-    "Code Documentation/KalmanNet-TSP Main/Plot.md",
     "Meeting Discussions/July 11, 2023.md",
     "Experimentation/KalmanNet Training/July 17, 2023.md",
     "Experimentation/KalmanNet Dataset Creation/July 17, 2023.md",
