@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Code Documentation/New Sort/new_sort.md",
+                "file": "Experimentation/KalmanNet Training/July 31, 2023.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Code Documentation/New Sort/new_sort.md",
+                "file": "Experimentation/KalmanNet Training/July 31, 2023.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Code Documentation/New Sort/new_sort.md",
+                "file": "Experimentation/KalmanNet Training/July 31, 2023.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Code Documentation/New Sort/new_sort.md"
+                "file": "Experimentation/KalmanNet Training/July 31, 2023.md"
               }
             }
           }
@@ -148,10 +148,12 @@
   },
   "active": "67c7c30bb15ef570",
   "lastOpenFiles": [
+    "Experimentation/KalmanNet Training/July 17, 2023.md",
+    "Experimentation/KalmanNet Training/July 31, 2023.md",
+    "Code Documentation/New Sort/new_sort.md",
     "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
     "Code Documentation/KalmanNet-TSP Main/KalmanFilter_test.md",
     "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
-    "Code Documentation/New Sort/new_sort.md",
     "Code Documentation/KalmanNet-TSP Main/parameters.md",
     "Code Documentation/KalmanNet-TSP Main/Linear_sysmdl.md",
     "Code Documentation/KalmanNet-TSP Main/main_linear_CA.md",
@@ -167,7 +169,6 @@
     "Code Documentation/KalmanNet-TSP Main/utils.md",
     "Code Documentation/Readme.md",
     "Meeting Discussions/July 11, 2023.md",
-    "Experimentation/KalmanNet Training/July 17, 2023.md",
     "Experimentation/KalmanNet Dataset Creation/July 17, 2023.md",
     "Experimentation/KalmanNet Training/Reference Point.md",
     "DataGen.md",
@@ -180,7 +181,6 @@
     "Experimentation/KalmanNet Training",
     "Experimentation/KalmanNet Dataset Creation",
     "Meeting Discussions",
-    "SORT.md",
     "Code Documentation",
     "Experimentation"
   ]

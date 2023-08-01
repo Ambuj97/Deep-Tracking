@@ -83,25 +83,26 @@ def convert_x_to_bbox(x,score=None):
   Takes a bounding box in the centre form [x,y,s,r] and returns it in the form
     [x1,y1,x2,y2] where x1,y1 is the top left and x2,y2 is the bottom right
   """
+  print('Inside convert_x_to_bbox', x[2][0], x[3][0])
+  w = np.sqrt(x[2][0] * x[3][0])
 
-  w = np.sqrt(x[2] * x[3])
-
-  h = x[2] / w
+  h = x[2][0] / w
   if(score==None):
 
     #test = np.array([x[0]-w/2.,x[1]-h/2.,x[0]+w/2.,x[1]+h/2.]).reshape((1,4))
     #print (test)
-    return np.array([x[0]-w/2.,x[1]-h/2.,x[0]+w/2.,x[1]+h/2.]).reshape((1,4))
+    return np.array([x[0][0]-w/2.,x[1][0]-h/2.,x[0][0]+w/2.,x[1][0]+h/2.]).reshape((1,4))
 
   else:
-    return np.array([x[0]-w/2.,x[1]-h/2.,x[0]+w/2.,x[1]+h/2.,score]).reshape((1,5))
+    return np.array([x[0][0]-w/2.,x[1][0]-h/2.,x[0][0]+w/2.,x[1][0]+h/2.,score]).reshape((1,5))
 
 class KalmanBoxTracker(object):
   """
   This class represents the internal state of individual tracked objects observed as bbox.
   """
   count = 0
-  dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
+  # dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
+  dataFileName = ['7x7_rq020_T100_KN2.pt']
   modelFolder = 'SORT-KalmanNet/new_sort/KNet' + '/'
   today = datetime.today()
   now = datetime.now()
@@ -135,7 +136,8 @@ class KalmanBoxTracker(object):
     self.KNet_model.Build(KalmanBoxTracker.sys_model)
     self.KNet_Pipeline.setModel(self.KNet_model)
     
-    self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_KN2.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    # self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
     self.extra_dim = np.zeros((3,1))
     #self.x = convert_bbox_to_z(bbox) 
@@ -170,11 +172,14 @@ class KalmanBoxTracker(object):
         self.x[6] *= 0.0
      # self.kf.predict()
       self.x = self.KNet_Pipeline.NNTest(1, torch.from_numpy(np.reshape(self.x, (1,) + self.x.shape)).float()).cpu().detach().numpy()
-      print ('x ', self.x)
+      # print ('x ', self.x)
       self.age += 1
       if(self.time_since_update>0):
         self.hit_streak = 0
       self.time_since_update += 1
+      print('\n\n')
+      print(self.x)
+      print('Calling convert_x_to_bbox from predict')
       self.history.append(convert_x_to_bbox(self.x))
       return self.history[-1]
     
@@ -182,6 +187,7 @@ class KalmanBoxTracker(object):
      """
      Returns the current bounding box estimate.
      """
+     print('Calling convert_x_to_bbox from get_state')
      return convert_x_to_bbox(self.x)
  
 def associate_detections_to_trackers(detections,trackers,iou_threshold = 0.3):

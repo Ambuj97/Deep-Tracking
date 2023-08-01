@@ -166,7 +166,7 @@ class Pipeline_KF:
         # loss_fn = nn.MSELoss(reduction='mean')
 
         self.model = torch.load(self.modelFileName, map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
-        print(self.model)
+        # print(self.model)
         self.model.eval()
 
         torch.no_grad()

@@ -66,7 +66,7 @@ sys_model.InitSequence(m1_0, m2_0)
 dataFolderName = 'SORT-KalmanNet/KalmanNet_TSP/Simulations/Linear_canonical/H=I' + '/'
 #dataFileName = ['2x2_rq-1010_T100.pt','2x2_rq020_T100.pt','2x2_rq1030_T100.pt','2x2_rq2040_T100.pt','2x2_rq3050_T100.pt']
 # print("Start Data Gen")
-dataFileName = ['7x7_rq020_T100_KN2.pt']
+dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
 # DataGen(sys_model, dataFolderName + dataFileName[index], T, T_test,randomInit=False)
 print("Data Load")
 [train_input, train_target, cv_input, cv_target, test_input, test_target] = DataLoader_GPU(dataFolderName + dataFileName[0])
