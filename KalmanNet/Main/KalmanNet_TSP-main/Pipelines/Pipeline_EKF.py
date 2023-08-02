@@ -71,6 +71,8 @@ class Pipeline_EKF:
             mask = torch.tensor([True,False,False])
             if SysModel.m == 2: 
                 mask = torch.tensor([True,False])
+            elif SysModel.m == 7: 
+                mask = torch.tensor([True, True, True, True, False, False, False])
 
         ##############
         ### Epochs ###
@@ -112,6 +114,8 @@ class Pipeline_EKF:
                     y_training_batch[ii,:,train_lengthMask[index,:]] = train_input[index,:,train_lengthMask[index,:]]
                     train_target_batch[ii,:,train_lengthMask[index,:]] = train_target[index,:,train_lengthMask[index,:]]
                 else:
+                    # print('Train_input', train_input.shape)
+                    # print('y_training_batch', y_training_batch.shape)
                     y_training_batch[ii,:,:] = train_input[index]
                     train_target_batch[ii,:,:] = train_target[index]
                 ii += 1

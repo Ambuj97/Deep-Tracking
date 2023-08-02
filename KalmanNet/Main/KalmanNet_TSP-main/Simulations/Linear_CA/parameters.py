@@ -46,7 +46,14 @@ F_genbb = torch.tensor([[1, 0, 0, 0, delta_t_gen, 0, 0],
 # H_onlyPos = torch.tensor([[1, 0, 0]]).float()
 
 
-H_identity = torch.eye(7)
+# H_identity = torch.eye(7)
+H_identity = torch.tensor([[1,0,0,0,0,0,0],
+                  [0,1,0,0,0,0,0],
+                  [0,0,1,0,0,0,0],
+                  [0,0,0,1,0,0,0],
+                  [0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0],
+                  [0,0,0,0,0,0,0]], dtype=torch.float32)
 H_onlyPos = torch.tensor([[1, 1, 1, 1, 0, 0, 0]]).float()
 
 ###############################################
