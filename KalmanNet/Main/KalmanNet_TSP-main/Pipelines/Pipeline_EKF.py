@@ -288,6 +288,8 @@ class Pipeline_EKF:
     def NNTest(self, SysModel, test_input, test_target, path_results, MaskOnState=False,\
      randomInit=False,test_init=None,load_model=False,load_model_path=None,\
         test_lengthMask=None):
+
+        # print(test_input.shape)
         # Load model
         if load_model:
             self.model = torch.load(load_model_path, map_location=self.device) 
@@ -361,6 +363,7 @@ class Pipeline_EKF:
         print(str, self.test_std_dB, "[dB]")
         # Print Run Time
         print("Inference Time:", t)
+        
 
         return [self.MSE_test_linear_arr, self.MSE_test_linear_avg, self.MSE_test_dB_avg, x_out_test, t]
 

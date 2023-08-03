@@ -58,6 +58,8 @@ class SystemModel:
         else:
             self.prior_S = prior_S
         
+        self.lower_bound = 0
+        self.upper_bound = 1080
 
     def f(self, x):
         batched_F = self.F.to(x.device).view(1,self.F.shape[0],self.F.shape[1]).expand(x.shape[0],-1,-1)
@@ -144,7 +146,7 @@ class SystemModel:
                 mean = torch.zeros([self.n])            
                 distrib = MultivariateNormal(loc=mean, covariance_matrix=R_gen)
                 er = distrib.rsample()
-                er = torch.reshape(er[:], yt.size())               
+                er = torch.reshape(er[:], yt.size())     
                 # Additive Observation Noise
                 yt = torch.add(yt,er)
 
@@ -172,15 +174,38 @@ class SystemModel:
             self.m1x_0_rand = torch.zeros(size, self.m, 1)
             if args.distribution == 'uniform':
                 ### if Uniform Distribution for random init
-                for i in range(size):           
-                    initConditions = torch.rand_like(self.m1x_0) * args.variance
-                    self.m1x_0_rand[i,:,0:1] = initConditions.view(self.m,1)     
+                for i in range(size):
+
+                    hLowerBound = 0
+                    hUpperBound = 100
+                    wLowerBound = 0
+                    wUpperBound = 50
+
+                    posLowerBound = 250
+                    posUpperBound = 500
+
+                    height = (hUpperBound - hLowerBound) * torch.rand(1) + hLowerBound
+                    width = (wUpperBound - wLowerBound) * torch.rand(1) + wLowerBound
+
+                    position = (posUpperBound - posLowerBound) * torch.rand(2) + posLowerBound
+                    scale = width*height
+                    aspectRatio = width/height
+                    
+                    # print(position, scale, aspectRatio)
+
+                    # print(self.m1x_0)
+                    initConditions = torch.tensor([position[0], position[1], scale, aspectRatio, 0, 0, 0])
+                    # initConditions = torch.rand_like(self.m1x_0) * args.variance
+                    # print(initConditions)
+                    self.m1x_0_rand[i,:,0:1] = initConditions.view(self.m,1)
+                    # print(self.m1x_0_rand[i,:,0:1])
+                    # print('\n\n')
             
             elif args.distribution == 'normal':
                 ### if Normal Distribution for random init
                 for i in range(size):
                     distrib = MultivariateNormal(loc=torch.squeeze(self.m1x_0), covariance_matrix=self.m2x_0)
-                    initConditions = distrib.rsample().view(self.m,1)
+                    initConditions = torch.abs(distrib.rsample().view(self.m,1))*100
                     self.m1x_0_rand[i,:,0:1] = initConditions
             else:
                 raise ValueError('args.distribution not supported!')
@@ -238,13 +263,17 @@ class SystemModel:
                     eq = torch.normal(mean=torch.zeros(size), std=self.Q).view(size,1,1)
                     # Additive Process Noise
                     xt = torch.add(xt,eq)
-                else:            
+                else:    
+                    # print('Printing self.x_prev: ', self.x_prev)        
                     xt = self.f(self.x_prev)
+                    # print('Printing XT', xt)
                     mean = torch.zeros([size, self.m])              
                     distrib = MultivariateNormal(loc=mean, covariance_matrix=self.Q)
                     eq = distrib.rsample().view(size,self.m,1)
                     # Additive Process Noise
                     xt = torch.add(xt,eq)
+
+
 
                 ################
                 ### Emission ###
@@ -258,10 +287,11 @@ class SystemModel:
                     # Additive Observation Noise
                     yt = torch.add(yt,er)
                 else:  
-                    yt = self.H.matmul(xt)
+                    yt = self.h(xt)
+                    # print('Printing YT', yt)
                     mean = torch.zeros([size,self.n])            
                     distrib = MultivariateNormal(loc=mean, covariance_matrix=self.R)
-                    er = distrib.rsample().view(size,self.n,1)          
+                    er = distrib.rsample().view(size,self.n,1)
                     # Additive Observation Noise
                     yt = torch.add(yt,er)
 

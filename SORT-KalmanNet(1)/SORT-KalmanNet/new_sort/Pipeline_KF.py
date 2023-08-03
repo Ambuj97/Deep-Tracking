@@ -156,54 +156,138 @@ class Pipeline_KF:
 
             print("Optimal idx:", self.MSE_cv_idx_opt, "Optimal :", self.MSE_cv_dB_opt, "[dB]")
 
-    def NNTest(self, n_Test, test_input):
+    # def NNTest(self, n_Test, test_input):
 
-        self.N_T = n_Test
+    #     self.N_T = n_Test
 
-        self.MSE_test_linear_arr = torch.empty([self.N_T])
+    #     self.MSE_test_linear_arr = torch.empty([self.N_T])
+
+    #     # MSE LOSS Function
+    #     # loss_fn = nn.MSELoss(reduction='mean')
+    #     # print(self.modelFileName)
+    #     # self.modelFileName = 'SORT-KalmanNet/new_sort/KNet/model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt'
+    #     self.model = torch.load(self.modelFileName, map_location=self.device)
+    #     # print(self.model)
+    #     self.model.eval()
+
+    #     torch.no_grad()
+        
+    #     # start = time.time()
+
+    #     for j in range(0, self.N_T):
+            
+    #         y_mdl_tst = test_input[j, :, :]
+
+    #         self.model.InitSequence(self.ssModel.m1x_0)
+
+    #         x_out_test = torch.empty(self.ssModel.m, self.ssModel.T)
+
+    #         for t in range(0, self.ssModel.T):
+    #             x_out_test[:, t] = self.model(y_mdl_tst[:, t])
+
+    #     #     self.MSE_test_linear_arr[j] = loss_fn(x_out_test, test_target[j, :, :]).item()
+
+    #     # end = time.time()
+    #     # t = end - start
+
+    #     # # Average
+    #     # self.MSE_test_linear_avg = torch.mean(self.MSE_test_linear_arr)
+    #     # self.MSE_test_dB_avg = 10 * torch.log10(self.MSE_test_linear_avg)
+
+    #     # # Standard deviation
+    #     # self.MSE_test_dB_std = torch.std(self.MSE_test_linear_arr, unbiased=True)
+    #     # self.MSE_test_dB_std = 10 * torch.log10(self.MSE_test_dB_std)
+
+    #     # # Print MSE Cross Validation
+    #     # str = self.modelName + "-" + "MSE Test:"
+    #     # print(str, self.MSE_test_dB_avg, "[dB]")
+    #     # str = self.modelName + "-" + "STD Test:"
+    #     # print(str, self.MSE_test_dB_std, "[dB]")
+    #     # # Print Run Time
+    #     # print("Inference Time:", t)
+
+    #     return x_out_test
+
+    def NNTest(self, test_input, MaskOnState=False,\
+     randomInit=False,test_init=None,load_model=False,load_model_path=None,\
+        test_lengthMask=None):
+        # print('Test input shape', test_input.shape)
+        # Load model
+        if load_model:
+            self.model = torch.load(load_model_path, map_location=self.device) 
+        else:
+            self.model = torch.load(self.modelFileName, map_location=self.device)
+        
+        # print('\n\n')
+        # print('NNTEST input\n')
+        # print(test_input)
+        self.N_T = test_input.shape[0]
+        self.ssModel.T_test = test_input.size()[-1]
+        self.MSE_test_linear_arr = torch.zeros([self.N_T])
+        x_out_test = torch.zeros([self.N_T, self.ssModel.m, self.ssModel.T_test]).to(self.device)
+
+        if MaskOnState:
+            #3x3 model
+            mask = torch.tensor([True,False,False])
+            
+            if self.ssModel.m == 2: 
+                mask = torch.tensor([True,False])
+            elif self.ssModel.m == 7: 
+                mask = torch.tensor([True, True, True, True, False, False, False])
 
         # MSE LOSS Function
-        # loss_fn = nn.MSELoss(reduction='mean')
+        loss_fn = nn.MSELoss(reduction='mean')
 
-        self.model = torch.load(self.modelFileName, map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
-        # print(self.model)
+        # Test mode
         self.model.eval()
-
+        self.model.batch_size = self.N_T
+        # Init Hidden State
+        self.model.init_hidden_KNet()
         torch.no_grad()
+
+        start = time.time()
+
+        if (randomInit):
+            self.model.InitSequence(test_init, self.ssModel.T_test)               
+        else:
+            self.model.InitSequence(self.ssModel.m1x_0.reshape(1,self.ssModel.m,1).repeat(self.N_T,1,1), self.ssModel.T_test)         
         
-        # start = time.time()
+        for t in range(0, self.ssModel.T_test):
+            x_out_test[:,:, t] = torch.squeeze(self.model(torch.unsqueeze(test_input[:,:, t],2)))
+        
+        end = time.time()
+        t = end - start
 
-        for j in range(0, self.N_T):
-            
-            y_mdl_tst = test_input[j, :, :]
-
-            self.model.InitSequence(self.ssModel.m1x_0)
-
-            x_out_test = torch.empty(self.ssModel.m, self.ssModel.T)
-
-            for t in range(0, self.ssModel.T):
-                x_out_test[:, t] = self.model(y_mdl_tst[:, t])
-
-        #     self.MSE_test_linear_arr[j] = loss_fn(x_out_test, test_target[j, :, :]).item()
-
-        # end = time.time()
-        # t = end - start
-
+        # MSE loss
+        # for j in range(self.N_T):# cannot use batch due to different length and std computation  
+        #     if(MaskOnState):
+        #         if self.args.randomLength:
+        #             self.MSE_test_linear_arr[j] = loss_fn(x_out_test[j,mask,test_lengthMask[j]], test_target[j,mask,test_lengthMask[j]]).item()
+        #         else:
+        #             self.MSE_test_linear_arr[j] = loss_fn(x_out_test[j,mask,:], test_target[j,mask,:]).item()
+        #     else:
+        #         if self.args.randomLength:
+        #             self.MSE_test_linear_arr[j] = loss_fn(x_out_test[j,:,test_lengthMask[j]], test_target[j,:,test_lengthMask[j]]).item()
+        #         else:
+        #             self.MSE_test_linear_arr[j] = loss_fn(x_out_test[j,:,:], test_target[j,:,:]).item()
+        
         # # Average
         # self.MSE_test_linear_avg = torch.mean(self.MSE_test_linear_arr)
         # self.MSE_test_dB_avg = 10 * torch.log10(self.MSE_test_linear_avg)
 
         # # Standard deviation
-        # self.MSE_test_dB_std = torch.std(self.MSE_test_linear_arr, unbiased=True)
-        # self.MSE_test_dB_std = 10 * torch.log10(self.MSE_test_dB_std)
+        # self.MSE_test_linear_std = torch.std(self.MSE_test_linear_arr, unbiased=True)
 
-        # # Print MSE Cross Validation
+        # # Confidence interval
+        # self.test_std_dB = 10 * torch.log10(self.MSE_test_linear_std + self.MSE_test_linear_avg) - self.MSE_test_dB_avg
+
+        # # Print MSE and std
         # str = self.modelName + "-" + "MSE Test:"
         # print(str, self.MSE_test_dB_avg, "[dB]")
         # str = self.modelName + "-" + "STD Test:"
-        # print(str, self.MSE_test_dB_std, "[dB]")
-        # # Print Run Time
-        # print("Inference Time:", t)
+        # print(str, self.test_std_dB, "[dB]")
+        # Print Run Time
+        print("Inference Time:", t)
 
         return x_out_test
     

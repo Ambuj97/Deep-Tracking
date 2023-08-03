@@ -32,7 +32,7 @@ def general_settings():
                         help='if True, random initial state for test set')
     parser.add_argument('--variance', type=float, default=100, metavar='variance',
                         help='input variance for the random initial state with uniform distribution')
-    parser.add_argument('--distribution', type=str, default='normal', metavar='distribution',
+    parser.add_argument('--distribution', type=str, default='uniform', metavar='distribution',
                         help='input distribution for the random initial state (uniform/normal)')
 
 

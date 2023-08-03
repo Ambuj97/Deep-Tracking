@@ -1,7 +1,7 @@
 # importing python libraries
 import torch
 from datetime import datetime
-
+import time
 # importing dependencies from other python files from the project
 # Simulations folder
 from Simulations.Linear_sysmdl import SystemModel
@@ -65,8 +65,8 @@ KnownRandInit_test = False
 args.use_cuda = True # use GPU or not
 args.n_steps = 1000
 args.n_batch = 10
-args.lr = 1e-4
-args.wd = 1e-4
+args.lr = 1e-3
+args.wd = 1e-5
 
 if args.use_cuda:
    if torch.cuda.is_available():
@@ -110,7 +110,7 @@ Train_Loss_On_AllState = True # if false: only calculate training loss on positi
 CV_model = False # if true: use CV model, else: use CA model
 
 DatafolderName = 'Simulations/Linear_CA/data/'
-DatafileName = '7x7_rq020_T100_KN4.pt'
+DatafileName = '7x7_rq020_T100_KN15.pt'
 
 # DatafileName = '7x7_rq020_T100_KN1.pt'
 
@@ -163,6 +163,7 @@ print("Load Original Data")
 
 
 # print(train_input)
+# print(train_target)
 
 print("Data Shape")
 print("testset state x size:",test_target.size())
@@ -176,7 +177,7 @@ print("Compute Loss on All States (if false, loss on position only):", Loss_On_A
 ##############################
 ### Evaluate Kalman Filter ###
 ##############################
-# print("Evaluate Kalman Filter")
+print("Evaluate Kalman Filter")
 if args.randomInit_test and KnownRandInit_test:
    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
 else: 
@@ -194,6 +195,8 @@ KNet_Pipeline = Pipeline(strTime, "KNet", "KNet")
 KNet_Pipeline.setssModel(sys_model)
 KNet_Pipeline.setModel(KNet_model)
 KNet_Pipeline.setTrainingParams(args)
+
+trainingStartTime = time.time()
 if (KnownRandInit_train):
    print("Train KNet with Known Random Initial State")
    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
@@ -202,7 +205,12 @@ else:
    print("Train KNet with Unknown Initial State")
    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
    [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState)
-   
+
+trainingEndTime = time.time()
+
+trainingTime = trainingEndTime - trainingStartTime
+
+print('Time taken for trainig: ', trainingTime)
 if (KnownRandInit_test): 
    print("Test KNet with Known Random Initial State")
    ## Test Neural Network

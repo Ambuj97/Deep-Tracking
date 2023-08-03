@@ -25,12 +25,12 @@ from datetime import datetime
 
 torch.pi = torch.acos(torch.zeros(1)).item() * 2 # which is 3.1415927410125732
 # import torch.nn as nn
-from Linear_sysmdl import SystemModel
+from Simulations.Linear_sysmdl import SystemModel
 # from Extended_data import DataGen,DataLoader,DataLoader_GPU, Decimate_and_perturbate_Data,Short_Traj_Split
 #from Extended_data import N_E, N_CV, N_T, F, H, T, T_test, m1_0, m2_0, m, n
 from Extended_data import N_T, F, H, T, T_test, m1_0, m2_0
 from Pipeline_KF import Pipeline_KF
-from KalmanNet_nn import KalmanNetNN
+from KNet.KalmanNet_nn import KalmanNetNN
 
 np.random.seed(0)
 
@@ -83,7 +83,13 @@ def convert_x_to_bbox(x,score=None):
   Takes a bounding box in the centre form [x,y,s,r] and returns it in the form
     [x1,y1,x2,y2] where x1,y1 is the top left and x2,y2 is the bottom right
   """
-  print('Inside convert_x_to_bbox', x[2][0], x[3][0])
+  # print('Inside convert_x_to_bbox', x, x[0][0], x[1][0])
+  # print(type(x), x.shape, len(x))
+
+  if len(x) == 1:
+    x = x.reshape((7, 1))
+
+  x = np.abs(x)
   w = np.sqrt(x[2][0] * x[3][0])
 
   h = x[2][0] / w
@@ -102,7 +108,7 @@ class KalmanBoxTracker(object):
   """
   count = 0
   # dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
-  dataFileName = ['7x7_rq020_T100_KN2.pt']
+  dataFileName = ['KN11_77.pt']
   modelFolder = 'SORT-KalmanNet/new_sort/KNet' + '/'
   today = datetime.today()
   now = datetime.now()
@@ -116,14 +122,46 @@ class KalmanBoxTracker(object):
 
 #for index in range(0,len(r2)):
 
-  print("1/r2 [dB]: ", 10 * torch.log10(1/r2[0]))
-  print("1/q2 [dB]: ", 10 * torch.log10(1/q2[0]))
+  # print("1/r2 [dB]: ", 10 * torch.log10(1/r2[0]))
+  # print("1/q2 [dB]: ", 10 * torch.log10(1/q2[0]))
 
   # True model
   r = torch.sqrt(r2[0])
   q = torch.sqrt(q2[0])
-  sys_model = SystemModel(F, q, H, r, 1, 1)
-  sys_model.InitSequence(m1_0, m2_0)
+
+  m1x_0 = torch.zeros(7)
+  m2x_0 = torch.eye(7)
+
+  delta_t_gen = 1e-2
+
+  F_genbb = torch.tensor([[1, 0, 0, 0, delta_t_gen, 0, 0],
+                  [0, 1, 0, 0, 0, delta_t_gen, 0],
+                  [0, 0, 1, 0, 0, 0, delta_t_gen],
+                  [0, 0, 0, 1, 0, 0, 0],
+                  [0, 0, 0, 0, 1, 0, 0],
+                  [0, 0, 0, 0, 0, 1, 0],
+                  [0, 0, 0, 0, 0, 0, 1]]).float()
+  
+  H_identity = torch.tensor([[1,0,0,0,0,0,0],
+                  [0,1,0,0,0,0,0],
+                  [0,0,1,0,0,0,0],
+                  [0,0,0,1,0,0,0],
+                  [0,0,0,0,1,0,0],
+                  [0,0,0,0,0,1,0],
+                  [0,0,0,0,0,0,1]], dtype=torch.float32)
+  
+  R_7 = torch.eye(7)
+
+  Q_bb = torch.tensor([[1/3*delta_t_gen**3, 0, 0, 0, 1/2*delta_t_gen**2, 0, 0],
+                          [0, 1/3*delta_t_gen**3, 0 , 0, 0, 1/2*delta_t_gen**2, 0],
+                          [0, 0, 1/3*delta_t_gen**3, 0, 0, 0, 1/2*delta_t_gen**2],
+                          [0, 0, 0, 1/3*delta_t_gen**3, 0, 0, 0],
+                          [1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen, 0, 0],
+                          [0, 1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen, 0],
+                          [0, 0, 1/2*delta_t_gen**2, 0, 0, 0, delta_t_gen]]).float()
+
+  sys_model = SystemModel(F_genbb, Q_bb, H_identity, R_7, 100, 100)
+  sys_model.InitSequence(m1x_0, m2x_0)
   
   def __init__(self,bbox):
     """
@@ -133,15 +171,17 @@ class KalmanBoxTracker(object):
     self.KNet_Pipeline = Pipeline_KF(KalmanBoxTracker.strTime, "SORT-KalmanNet/new_sort/KNet", "KNet_"+ KalmanBoxTracker.dataFileName[0])
     self.KNet_Pipeline.setssModel(KalmanBoxTracker.sys_model)
     self.KNet_model = KalmanNetNN()
-    self.KNet_model.Build(KalmanBoxTracker.sys_model)
+    self.KNet_model.NNBuild(KalmanBoxTracker.sys_model)
     self.KNet_Pipeline.setModel(self.KNet_model)
     
-    self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_KN2.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+    # print(KalmanBoxTracker.modelFolder+"model_KNet_KN4_77.pt")
+    # self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_KN4_77.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
     # self.KNet_Pipeline.model = torch.load(KalmanBoxTracker.modelFolder+"model_KNet_7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt", map_location=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
 
     self.extra_dim = np.zeros((3,1))
     #self.x = convert_bbox_to_z(bbox) 
     self.x = np.concatenate((convert_bbox_to_z(bbox), self.extra_dim), axis=0)
+    # print(self.x)
 
     self.time_since_update = 0
     self.id = KalmanBoxTracker.count
@@ -159,7 +199,7 @@ class KalmanBoxTracker(object):
       self.time_since_update = 0
       self.history = []
       self.hits += 1
-      print ('hits ', self.hits)
+      # print ('hits ', self.hits)
       self.hit_streak += 1
       
       #self.kf.update(convert_bbox_to_z(bbox))
@@ -168,18 +208,20 @@ class KalmanBoxTracker(object):
       """
       Advances the state vector and returns the predicted bounding box estimate.
       """
-      if((self.x[6]+self.x[2])<=0):
-        self.x[6] *= 0.0
+      inputX = self.x.reshape((7, 1))
+      if((inputX[6][0]+inputX[2][0])<=0):
+        inputX[6][0] *= 0.0
+
      # self.kf.predict()
-      self.x = self.KNet_Pipeline.NNTest(1, torch.from_numpy(np.reshape(self.x, (1,) + self.x.shape)).float()).cpu().detach().numpy()
-      # print ('x ', self.x)
+      self.x = self.KNet_Pipeline.NNTest(torch.from_numpy(np.reshape(inputX, (1,) + inputX.shape)).float()).cpu().detach().numpy()
       self.age += 1
       if(self.time_since_update>0):
         self.hit_streak = 0
       self.time_since_update += 1
-      print('\n\n')
-      print(self.x)
-      print('Calling convert_x_to_bbox from predict')
+      # print('\n\n')
+      # print(self.x)
+      # print('Calling convert_x_to_bbox from predict')
+      # print(convert_x_to_bbox(self.x))
       self.history.append(convert_x_to_bbox(self.x))
       return self.history[-1]
     
@@ -187,7 +229,7 @@ class KalmanBoxTracker(object):
      """
      Returns the current bounding box estimate.
      """
-     print('Calling convert_x_to_bbox from get_state')
+    #  print('Calling convert_x_to_bbox from get_state')
      return convert_x_to_bbox(self.x)
  
 def associate_detections_to_trackers(detections,trackers,iou_threshold = 0.3):
@@ -262,8 +304,10 @@ class Sort(object):
     to_del = []
     ret = []
     for t, trk in enumerate(trks):
+      # print('predict - self.trackers')
+      # print(self.trackers[t])
       pos = self.trackers[t].predict()[0]
-      print ('pos ', pos)
+      # print ('pos ', pos)
       trk[:] = [pos[0], pos[1], pos[2], pos[3], 0]
       if np.any(np.isnan(pos)):
         to_del.append(t)
@@ -274,21 +318,20 @@ class Sort(object):
     print ('trks ', trks)
     matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(dets,trks, self.iou_threshold)
     print ('matched ', matched)
-    #print ('unmatched dets ', unmatched_dets)
-    #print ('unmatched trks', unmatched_trks)
+
     # update matched trackers with assigned detections
     for m in matched:
-      print (m)
+      # print (m)
       self.trackers[m[1]].update(dets[m[0], :])
       print ('trackers ',  self.trackers[m[1]])
 
     # create and initialise new trackers for unmatched detections
     # print ('unmatch ', unmatched_dets)
     for i in unmatched_dets:
-       # print('i ', i)
-       # print('dets ', dets[i,:])
+        # print('detections (GT)')
+        # print(dets[i,:])
         trk = KalmanBoxTracker(dets[i,:])
-       # print ('after kalman')
+        # print ('after kalman')
         self.trackers.append(trk)
     i = len(self.trackers)
     for trk in reversed(self.trackers):
@@ -302,7 +345,6 @@ class Sort(object):
           self.trackers.pop(i)
     # print('return: ', ret, 'len ', len(ret))
     if(len(ret)>0):
-        
       return np.concatenate(ret)
     return np.empty((0,5))
 
@@ -343,7 +385,7 @@ if __name__ == '__main__':
   pattern = os.path.join('SORT-KalmanNet/new_sort', args.seq_path, phase, 'KITTI-13', 'det', 'det.txt')
   # print(pattern)
   for seq_dets_fn in glob.glob(pattern):
-    print("KITTI-13")
+    # print("KITTI-13")
     mot_tracker = Sort(max_age=args.max_age, 
                        min_hits=args.min_hits,
                        iou_threshold=args.iou_threshold) #create instance of the SORT tracker

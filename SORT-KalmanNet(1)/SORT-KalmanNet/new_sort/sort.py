@@ -232,10 +232,13 @@ class Sort(object):
     to_del = []
     ret = []
     for t, trk in enumerate(trks):
+      # print(self.trackers[t])
       pos = self.trackers[t].predict()[0]
+      print ('pos ', pos)
       trk[:] = [pos[0], pos[1], pos[2], pos[3], 0]
       if np.any(np.isnan(pos)):
         to_del.append(t)
+    print('Tracks', trks)
     trks = np.ma.compress_rows(np.ma.masked_invalid(trks))
     for t in reversed(to_del):
       self.trackers.pop(t)
@@ -243,13 +246,16 @@ class Sort(object):
 
     # update matched trackers with assigned detections
     for m in matched:
-
+      print('Matched')
+      print(m)
       self.trackers[m[1]].update(dets[m[0], :])
-      
-
+    
+    print('Detections (GT):')
+    print(dets)
     # create and initialise new trackers for unmatched detections
     for i in unmatched_dets:
         trk = KalmanBoxTracker(dets[i,:])
+        # print(trk)
         self.trackers.append(trk)
     i = len(self.trackers)
     for trk in reversed(self.trackers):
@@ -316,9 +322,9 @@ if __name__ == '__main__':
         frame += 1 #detection and frame numbers begin at 1
         print(frame)
         dets = seq_dets[seq_dets[:, 0]==frame, 2:7]
-        print(dets)
+        # print(dets)
         dets[:, 2:4] += dets[:, 0:2] #convert to [x1,y1,w,h] to [x1,y1,x2,y2]
-        print(dets)
+        # print(dets)
         total_frames += 1
 
         if(display):
