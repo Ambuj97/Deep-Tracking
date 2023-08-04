@@ -141,8 +141,8 @@ else:
    sys_model = SystemModel(F_genbb, Q_bb, H_identity, R_7, args.T, args.T_test)
    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
 
-print("Start Data Gen")
-utils.DataGen(args, sys_model_gen, DatafolderName+DatafileName)
+# print("Start Data Gen")
+# utils.DataGen(args, sys_model_gen, DatafolderName+DatafileName)
 
 print("Load Original Data")
 [train_input, train_target, cv_input, cv_target, test_input, test_target, train_init, cv_init, test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
@@ -177,11 +177,11 @@ print("Compute Loss on All States (if false, loss on position only):", Loss_On_A
 ##############################
 ### Evaluate Kalman Filter ###
 ##############################
-print("Evaluate Kalman Filter")
-if args.randomInit_test and KnownRandInit_test:
-   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
-else: 
-   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
+# print("Evaluate Kalman Filter")
+# if args.randomInit_test and KnownRandInit_test:
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
+# else: 
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
 
 ##########################
 ### Evaluate KalmanNet ###
@@ -196,21 +196,21 @@ KNet_Pipeline.setssModel(sys_model)
 KNet_Pipeline.setModel(KNet_model)
 KNet_Pipeline.setTrainingParams(args)
 
-trainingStartTime = time.time()
-if (KnownRandInit_train):
-   print("Train KNet with Known Random Initial State")
-   print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
-   [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState, randomInit = True, cv_init=cv_init,train_init=train_init)
-else:
-   print("Train KNet with Unknown Initial State")
-   print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
-   [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState)
+# trainingStartTime = time.time()
+# if (KnownRandInit_train):
+#    print("Train KNet with Known Random Initial State")
+#    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
+#    [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState, randomInit = True, cv_init=cv_init,train_init=train_init)
+# else:
+#    print("Train KNet with Unknown Initial State")
+#    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
+#    [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState)
 
-trainingEndTime = time.time()
+# trainingEndTime = time.time()
 
-trainingTime = trainingEndTime - trainingStartTime
+# trainingTime = trainingEndTime - trainingStartTime
 
-print('Time taken for trainig: ', trainingTime)
+# print('Time taken for trainig: ', trainingTime)
 if (KnownRandInit_test): 
    print("Test KNet with Known Random Initial State")
    ## Test Neural Network

@@ -108,7 +108,7 @@ class KalmanBoxTracker(object):
   """
   count = 0
   # dataFileName = ['7x7_rq020_T100_mean_0_vdb_20_changed_initial_x_y.pt']
-  dataFileName = ['KN11_77.pt']
+  dataFileName = ['KN13_77.pt']
   modelFolder = 'SORT-KalmanNet/new_sort/KNet' + '/'
   today = datetime.today()
   now = datetime.now()
