@@ -1,0 +1,13 @@
+- Literature review:
+	- Add figures of architectures on literature review
+- Methodology:
+	- Describe KalmanNet in detail and how the flow is carried out.
+	- Describe motivation behind using KalmanNet, how KalmanNet training is done, equations, which architecture was used, how parameters were initialized.
+	- Compare previous KG computation and how KG is computed in KalmanNet.
+	- Explain the new proposed state vector (x, y, s, r, x', y', s') representing a BB scenario
+	- Explain why synthetic dataset was created, why KalmanNet was trained on synthetic dataset, which scenario was used for baseline model. Explain why simulation was done for KalmanNet.
+	- Describe various experimentational settings, what were the results (MSE for KalmanNet state estimation).
+	- Explain how it performed when integrated with SORT and highlight limitations of synthetic dataset for such a complex real-world problem
+- Future work:
+	- Explain scenarios which were not tackled (moving camera, moving pedestrians).
+	- Explain limitations when integrated with SORT code and how improvements can be done

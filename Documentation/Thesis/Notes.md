@@ -12,3 +12,9 @@ Results:
 
 Todo coming days:
 - Keep working on improving tracking.
+
+
+
+
+- Why we have proposed the 7 state space model and explain it in methodology
+- Drawbacks of KF and KNet -> background of proposed work
