@@ -22,6 +22,7 @@ from Pipelines.Pipeline_EKF import Pipeline_EKF as Pipeline
 
 # Plot.py file
 from Plot import Plot_KF as Plot
+from preprocess_MOT import trainInput, trainOutput
 
 
 ################
@@ -43,16 +44,16 @@ print("Pipeline Start")
 ####################################
 args = config.general_settings()
 ### Dataset parameters
-args.N_E = 1000
-args.N_CV = 100
-args.N_T = 200
+args.N_E = 83
+args.N_CV = 83
+args.N_T = 83
 offset = 0 ### Init condition of dataset
 args.randomInit_train = True
 args.randomInit_cv = True
 args.randomInit_test = True
 
-args.T = 100
-args.T_test = 100
+args.T = 599
+args.T_test = 599
 ### training parameters
 KnownRandInit_train = False # if true: use known random init for training, else: model is agnostic to random init
 KnownRandInit_cv = False
@@ -63,15 +64,17 @@ KnownRandInit_test = False
 # KnownRandInit_test = False
 
 args.use_cuda = True # use GPU or not
-args.n_steps = 1000
+args.n_steps = 500
 args.n_batch = 10
-args.lr = 1e-3
-args.wd = 1e-5
+args.lr = 1e-4
+args.wd = 1e-4
 
 if args.use_cuda:
    if torch.cuda.is_available():
       device = torch.device('cuda')
       print("Using GPU")
+      trainInput = trainInput.to('cuda:0')
+      trainOutput = trainOutput.to('cuda:0')
    else:
       raise Exception("No GPU found, please set args.use_cuda = False")
 else:
@@ -96,6 +99,7 @@ else:
 
 
 m1x_0 = torch.zeros(m_bb)
+# m1x_0 = torch.tensor([1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8])
 m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
 m2x_0 = std_feed * std_feed * torch.eye(m_bb) # Initial Covariance for feeding to filters and KNet
 m2x_0_gen = std_gen * std_gen * torch.eye(m_bb) # Initial Covariance for generating dataset
@@ -105,12 +109,12 @@ m2x_0_cv = std_feed * std_feed * torch.eye(m_cv) # Initial Covariance for CV
 ###  Dataset Generation   ###
 #############################
 ### PVA or P
-Loss_On_AllState = True # if false: only calculate loss on position
-Train_Loss_On_AllState = True # if false: only calculate training loss on position
+Loss_On_AllState = False # if false: only calculate loss on position
+Train_Loss_On_AllState = False # if false: only calculate training loss on position
 CV_model = False # if true: use CV model, else: use CA model
 
 DatafolderName = 'Simulations/Linear_CA/data/'
-DatafileName = '7x7_rq020_T100_KN15.pt'
+DatafileName = '7x7_rq020_T100_KN_U.pt'
 
 # DatafileName = '7x7_rq020_T100_KN1.pt'
 
@@ -144,8 +148,8 @@ else:
 # print("Start Data Gen")
 # utils.DataGen(args, sys_model_gen, DatafolderName+DatafileName)
 
-print("Load Original Data")
-[train_input, train_target, cv_input, cv_target, test_input, test_target, train_init, cv_init, test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
+# print("Load Original Data")
+# [train_input, train_target, cv_input, cv_target, test_input, test_target, train_init, cv_init, test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
 
                                                                                                                        
 # if CV_model:# set state as (p,v) instead of (p,v,a)
@@ -165,15 +169,16 @@ print("Load Original Data")
 # print(train_input)
 # print(train_target)
 
-print("Data Shape")
-print("testset state x size:",test_target.size())
-print("testset observation y size:",test_input.size())
-print("trainset state x size:",train_target.size())
-print("trainset observation y size:",train_input.size())
-print("cvset state x size:",cv_target.size())
-print("cvset observation y size:",cv_input.size())
+# print("Data Shape")
+# print("testset state x size:",test_target.size())
+# print("testset observation y size:",test_input.size())
+# print("trainset state x size:",train_target.size())
+# print("trainset observation y size:",train_input.size())
+# print("cvset state x size:",cv_target.size())
+# print("cvset observation y size:",cv_input.size())
 
-print("Compute Loss on All States (if false, loss on position only):", Loss_On_AllState)
+# print("Compute Loss on All States (if false, loss on position only):", Loss_On_AllState)
+# print(train_input[0])
 ##############################
 ### Evaluate Kalman Filter ###
 ##############################
@@ -196,31 +201,31 @@ KNet_Pipeline.setssModel(sys_model)
 KNet_Pipeline.setModel(KNet_model)
 KNet_Pipeline.setTrainingParams(args)
 
-# trainingStartTime = time.time()
-# if (KnownRandInit_train):
-#    print("Train KNet with Known Random Initial State")
-#    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
-#    [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState, randomInit = True, cv_init=cv_init,train_init=train_init)
-# else:
-#    print("Train KNet with Unknown Initial State")
-#    print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
-#    [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, cv_input, cv_target, train_input, train_target, path_results, MaskOnState=not Train_Loss_On_AllState)
+trainingStartTime = time.time()
+if (KnownRandInit_train):
+   print("Train KNet with Known Random Initial State")
+   print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
+   [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, trainInput, trainOutput, trainInput, trainOutput, path_results, MaskOnState=not Train_Loss_On_AllState, randomInit = True, cv_init=cv_init,train_init=train_init)
+else:
+   print("Train KNet with Unknown Initial State")
+   print("Train Loss on All States (if false, loss on position only):", Train_Loss_On_AllState)
+   [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch] = KNet_Pipeline.NNTrain(sys_model, trainInput, trainOutput, trainInput, trainOutput, path_results, MaskOnState=not Train_Loss_On_AllState)
 
-# trainingEndTime = time.time()
+trainingEndTime = time.time()
 
-# trainingTime = trainingEndTime - trainingStartTime
+trainingTime = trainingEndTime - trainingStartTime
 
-# print('Time taken for trainig: ', trainingTime)
+print('Time taken for trainig: ', trainingTime)
 if (KnownRandInit_test): 
    print("Test KNet with Known Random Initial State")
    ## Test Neural Network
    print("Compute Loss on All States (if false, loss on position only):", Loss_On_AllState)
-   [MSE_test_linear_arr, MSE_test_linear_avg, MSE_test_dB_avg,KNet_out,RunTime] = KNet_Pipeline.NNTest(sys_model, test_input, test_target, path_results,MaskOnState=not Loss_On_AllState,randomInit=True,test_init=test_init)
+   [MSE_test_linear_arr, MSE_test_linear_avg, MSE_test_dB_avg,KNet_out,RunTime] = KNet_Pipeline.NNTest(sys_model, trainInput, trainOutput, path_results,MaskOnState=not Loss_On_AllState,randomInit=True,test_init=test_init)
 else: 
    print("Test KNet with Unknown Initial State")
    ## Test Neural Network
    print("Compute Loss on All States (if false, loss on position only):", Loss_On_AllState)
-   [MSE_test_linear_arr, MSE_test_linear_avg, MSE_test_dB_avg,KNet_out,RunTime] = KNet_Pipeline.NNTest(sys_model, test_input, test_target, path_results,MaskOnState=not Loss_On_AllState)
+   [MSE_test_linear_arr, MSE_test_linear_avg, MSE_test_dB_avg,KNet_out,RunTime] = KNet_Pipeline.NNTest(sys_model, trainInput, trainOutput, path_results,MaskOnState=not Loss_On_AllState)
 
       
 ####################

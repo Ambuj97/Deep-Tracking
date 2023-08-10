@@ -179,7 +179,9 @@ class KalmanNetNN(torch.nn.Module):
         input M1_0 (torch.tensor): 1st moment of x at time 0 [batch_size, m, 1]
         """
         self.T = T
-
+        # print('printing M1_0')
+        # print(M1_0)
+        # print('\n\n')
         self.m1x_posterior = M1_0.to(self.device)
         self.m1x_posterior_previous = self.m1x_posterior
         self.m1x_prior_previous = self.m1x_posterior
@@ -191,9 +193,16 @@ class KalmanNetNN(torch.nn.Module):
     def step_prior(self):
         # Predict the 1-st moment of x
         self.m1x_prior = self.f(self.m1x_posterior)
+        # print('Printing self.m1x_prior')
+        # print(self.m1x_prior)
+        # print('\n\n')
 
         # Predict the 1-st moment of y
         self.m1y = self.h(self.m1x_prior)
+        # print('Printing self.m1y')
+        # print(self.m1y)
+        # print('\n\n')
+
 
     ##############################
     ### Kalman Gain Estimation ###
@@ -212,7 +221,7 @@ class KalmanNetNN(torch.nn.Module):
         fw_update_diff = func.normalize(fw_update_diff, p=2, dim=1, eps=1e-12, out=None)
 
         # Kalman Gain Network Step
-        KG = self.KGain_step(obs_diff, obs_innov_diff, fw_evol_diff, fw_update_diff)
+        KG = self.KGain_step(obs_diff/1000, obs_innov_diff/1000, fw_evol_diff/1000, fw_update_diff/1000)
 
         # Reshape Kalman Gain to a Matrix
         self.KGain = torch.reshape(KG, (self.batch_size, self.m, self.n))
@@ -230,9 +239,20 @@ class KalmanNetNN(torch.nn.Module):
 
         # Innovation
         dy = y - self.m1y # [batch_size, n, 1]
+        # print('Printing dy')
+        # print(dy)
+        # print('\n\n')
 
+        # print('Printing KG')
+        # print(self.KGain)
+        # print('\n\n')
         # Compute the 1-st posterior moment
         INOV = torch.bmm(self.KGain, dy)
+
+        # print('Printing INOV')
+        # print(INOV)
+        # print('\n\n')
+
         self.m1x_posterior_previous = self.m1x_posterior
         self.m1x_posterior = self.m1x_prior + INOV
 
@@ -243,6 +263,9 @@ class KalmanNetNN(torch.nn.Module):
         self.y_previous = y
 
         # return
+        # print('Printing return value')
+        # print(self.m1x_posterior)
+        # print('\n\n')
         return self.m1x_posterior
 
     ########################
@@ -318,6 +341,9 @@ class KalmanNetNN(torch.nn.Module):
     ### Forward ###
     ###############
     def forward(self, y):
+        # print('Printing y')
+        # print(y)
+        # print('\n\n')
         y = y.to(self.device)
         return self.KNet_step(y)
 

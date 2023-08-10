@@ -176,26 +176,26 @@ class SystemModel:
                 ### if Uniform Distribution for random init
                 for i in range(size):
 
-                    hLowerBound = 0
-                    hUpperBound = 100
-                    wLowerBound = 0
-                    wUpperBound = 50
+                    # hLowerBound = 0
+                    # hUpperBound = 100
+                    # wLowerBound = 0
+                    # wUpperBound = 50
 
-                    posLowerBound = 250
-                    posUpperBound = 500
+                    # posLowerBound = 250
+                    # posUpperBound = 500
 
-                    height = (hUpperBound - hLowerBound) * torch.rand(1) + hLowerBound
-                    width = (wUpperBound - wLowerBound) * torch.rand(1) + wLowerBound
+                    # height = (hUpperBound - hLowerBound) * torch.rand(1) + hLowerBound
+                    # width = (wUpperBound - wLowerBound) * torch.rand(1) + wLowerBound
 
-                    position = (posUpperBound - posLowerBound) * torch.rand(2) + posLowerBound
-                    scale = width*height
-                    aspectRatio = width/height
+                    # position = (posUpperBound - posLowerBound) * torch.rand(2) + posLowerBound
+                    # scale = width*height
+                    # aspectRatio = width/height
                     
                     # print(position, scale, aspectRatio)
 
                     # print(self.m1x_0)
-                    initConditions = torch.tensor([position[0], position[1], scale, aspectRatio, 0, 0, 0])
-                    # initConditions = torch.rand_like(self.m1x_0) * args.variance
+                    # initConditions = torch.tensor([position[0], position[1], scale, aspectRatio, 0, 0, 0])
+                    initConditions = torch.rand_like(self.m1x_0) * args.variance
                     # print(initConditions)
                     self.m1x_0_rand[i,:,0:1] = initConditions.view(self.m,1)
                     # print(self.m1x_0_rand[i,:,0:1])
@@ -205,7 +205,7 @@ class SystemModel:
                 ### if Normal Distribution for random init
                 for i in range(size):
                     distrib = MultivariateNormal(loc=torch.squeeze(self.m1x_0), covariance_matrix=self.m2x_0)
-                    initConditions = torch.abs(distrib.rsample().view(self.m,1))*100
+                    initConditions = distrib.rsample().view(self.m,1)
                     self.m1x_0_rand[i,:,0:1] = initConditions
             else:
                 raise ValueError('args.distribution not supported!')
@@ -302,9 +302,11 @@ class SystemModel:
 
                 # Save Current State to Trajectory Array
                 self.Target[:, :, t] = torch.squeeze(xt,2)
+                # print(xt, xt.shape)
 
                 # Save Current Observation to Trajectory Array
                 self.Input[:, :, t] = torch.squeeze(yt,2)
+                # print(yt, yt.shape)
 
                 ################################
                 ### Save Current to Previous ###

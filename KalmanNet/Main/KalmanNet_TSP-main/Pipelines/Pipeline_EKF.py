@@ -134,8 +134,15 @@ class Pipeline_EKF:
             
             # Forward Computation
             for t in range(0, SysModel.T):
+                # print(y_training_batch[:, :, t])
                 x_out_training_batch[:, :, t] = torch.squeeze(self.model(torch.unsqueeze(y_training_batch[:, :, t],2)))
-            
+                # print('Prediction: ')
+                # print(x_out_training_batch[:, :, t])
+                # print('\n\n')
+                # print('Example done')
+                # print('\n\n')
+
+            # print('training complete - one round')
             # Compute Training Loss
             MSE_trainbatch_linear_LOSS = 0
             if (self.args.CompositionLoss):
@@ -179,7 +186,10 @@ class Pipeline_EKF:
                             MSE_train_linear_LOSS[jj] = self.loss_fn(x_out_training_batch[jj,:,train_lengthMask[index]], train_target_batch[jj,:,train_lengthMask[index]])
                             jj += 1
                         MSE_trainbatch_linear_LOSS = torch.mean(MSE_train_linear_LOSS)
-                    else: 
+                    else:
+                        # print(x_out_training_batch)
+                        # print(train_target_batch)
+                        # print('\n\n')
                         MSE_trainbatch_linear_LOSS = self.loss_fn(x_out_training_batch, train_target_batch)
 
             # dB Loss
@@ -256,7 +266,7 @@ class Pipeline_EKF:
                 # dB Loss
                 self.MSE_cv_linear_epoch[ti] = MSE_cvbatch_linear_LOSS.item()
                 self.MSE_cv_dB_epoch[ti] = 10 * torch.log10(self.MSE_cv_linear_epoch[ti])
-                
+                # 
                 if (self.MSE_cv_dB_epoch[ti] < self.MSE_cv_dB_opt):
                     self.MSE_cv_dB_opt = self.MSE_cv_dB_epoch[ti]
                     self.MSE_cv_idx_opt = ti
@@ -268,11 +278,16 @@ class Pipeline_EKF:
             ########################
             print(ti, "MSE Training :", self.MSE_train_dB_epoch[ti], "[dB]", "MSE Validation :", self.MSE_cv_dB_epoch[ti],
                   "[dB]")
-                      
+            
+            # print(ti, "MSE Training :", self.MSE_train_dB_epoch[ti], "[dB]")
+            
+            summaryWriter.add_scalar('Validation MSE (in dB)', self.MSE_cv_dB_epoch[ti], global_step = ti)
+
             if (ti > 1):
                 d_train = self.MSE_train_dB_epoch[ti] - self.MSE_train_dB_epoch[ti - 1]
                 d_cv = self.MSE_cv_dB_epoch[ti] - self.MSE_cv_dB_epoch[ti - 1]
                 print("diff MSE Training :", d_train, "[dB]", "diff MSE Validation :", d_cv, "[dB]")
+                # print("diff MSE Training :", d_train, "[dB]")
 
             print("Optimal idx:", self.MSE_cv_idx_opt, "Optimal :", self.MSE_cv_dB_opt, "[dB]")
         
