@@ -1,0 +1,1 @@
+- Add to section 1.3, structure of thesis, information about sections present in the thesis.

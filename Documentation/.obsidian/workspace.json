@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Experimentation/KalmanNet Training/August 09, 2023.md",
+                "file": "Thesis/Draft notes.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Experimentation/KalmanNet Training/August 09, 2023.md",
+                "file": "Thesis/Draft notes.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Experimentation/KalmanNet Training/August 09, 2023.md",
+                "file": "Thesis/Draft notes.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Experimentation/KalmanNet Training/August 09, 2023.md"
+                "file": "Thesis/Draft notes.md"
               }
             }
           }
@@ -148,15 +148,18 @@
   },
   "active": "67c7c30bb15ef570",
   "lastOpenFiles": [
-    "Experimentation/KalmanNet Training/July 31, 2023.md",
-    "Experimentation/KalmanNet Training/August 09, 2023.md",
     "Thesis/Notes.md",
-    "Experimentation/KalmanNet Training/July 17, 2023.md",
-    "Meeting Discussions/July 11, 2023.md",
-    "Meeting Discussions/August 04, 2023.md",
+    "Thesis/Draft notes.md",
+    "Thesis/Points added.md",
     "Thesis/Template pointers.md",
+    "Experimentation/KalmanNet Training/August 09, 2023.md",
     "Meeting Discussions/August 03, 2023.md",
+    "Meeting Discussions/August 04, 2023.md",
+    "Meeting Discussions/July 11, 2023.md",
     "Meeting Discussions/July 19, 2023.md",
+    "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
+    "Experimentation/KalmanNet Training/July 31, 2023.md",
+    "Experimentation/KalmanNet Training/July 17, 2023.md",
     "Experimentation/KalmanNet Dataset Creation/July 17, 2023.md",
     "Code Documentation/KalmanNet-TSP Main/Linear_KF.md",
     "Code Documentation/KalmanNet-TSP Main/Linear_sysmdl.md",
@@ -166,7 +169,6 @@
     "Code Documentation/KalmanNet-TSP Main/KalmanNet_nn.md",
     "Code Documentation/KalmanNet-TSP Main/KalmanFilter_test.md",
     "Code Documentation/KalmanNet-TSP Main/config.md",
-    "Code Documentation/KalmanNet-Dataset/Extended_Data.md",
     "Experimentation/KalmanNet Training/Reference Point.md",
     "Thesis",
     "Code Documentation/New Sort/new_sort.md",
@@ -175,8 +177,6 @@
     "Code Documentation/KalmanNet-TSP Main/Plot.md",
     "Code Documentation/New Sort/new_sort",
     "Code Documentation/New Sort",
-    "Code Documentation/KalmanNet-TSP Main/utils.md",
-    "Code Documentation/Readme.md",
     "Code Documentation/KalmanNet-TSP Main",
     "Code Documentation/KalmanNet-Dataset",
     "Experimentation/KalmanNet Training",

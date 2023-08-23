@@ -209,7 +209,7 @@ class KalmanNetNN(torch.nn.Module):
     ##############################
     def step_KGain_est(self, y):
         # both in size [batch_size, n]
-        obs_diff = torch.squeeze(y,2) - torch.squeeze(self.y_previous,2) 
+        obs_diff = torch.squeeze(y,2) - torch.squeeze(self.y_previous,2)
         obs_innov_diff = torch.squeeze(y,2) - torch.squeeze(self.m1y,2)
         # both in size [batch_size, m]
         fw_evol_diff = torch.squeeze(self.m1x_posterior,2) - torch.squeeze(self.m1x_posterior_previous,2)

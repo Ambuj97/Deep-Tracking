@@ -64,9 +64,9 @@ KnownRandInit_test = False
 # KnownRandInit_test = False
 
 args.use_cuda = True # use GPU or not
-args.n_steps = 500
+args.n_steps = 1000
 args.n_batch = 10
-args.lr = 1e-4
+args.lr = 1e-5
 args.wd = 1e-4
 
 if args.use_cuda:
