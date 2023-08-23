@@ -66,7 +66,7 @@ KnownRandInit_test = False
 args.use_cuda = True # use GPU or not
 args.n_steps = 1000
 args.n_batch = 10
-args.lr = 1e-5
+args.lr = 1e-4
 args.wd = 1e-4
 
 if args.use_cuda:
@@ -184,9 +184,9 @@ else:
 ##############################
 # print("Evaluate Kalman Filter")
 # if args.randomInit_test and KnownRandInit_test:
-#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
 # else: 
-#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
+#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState)
 
 ##########################
 ### Evaluate KalmanNet ###
