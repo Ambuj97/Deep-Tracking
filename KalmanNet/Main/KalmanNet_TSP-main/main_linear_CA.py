@@ -59,12 +59,8 @@ KnownRandInit_train = False # if true: use known random init for training, else:
 KnownRandInit_cv = False
 KnownRandInit_test = False
 
-# KnownRandInit_train = False # if true: use known random init for training, else: model is agnostic to random init
-# KnownRandInit_cv = False
-# KnownRandInit_test = False
-
 args.use_cuda = True # use GPU or not
-args.n_steps = 1000
+args.n_steps = 250
 args.n_batch = 10
 args.lr = 1e-4
 args.wd = 1e-4
@@ -91,15 +87,8 @@ if(KnownRandInit_train or KnownRandInit_cv or KnownRandInit_test):
 else:
    std_feed = 1
 
-# m1x_0 = torch.zeros(m) # Initial State
-# m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
-# m2x_0 = std_feed * std_feed * torch.eye(m) # Initial Covariance for feeding to filters and KNet
-# m2x_0_gen = std_gen * std_gen * torch.eye(m) # Initial Covariance for generating dataset
-# m2x_0_cv = std_feed * std_feed * torch.eye(m_cv)
-
 
 m1x_0 = torch.zeros(m_bb)
-# m1x_0 = torch.tensor([1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8, 1e-8])
 m1x_0_cv = torch.zeros(m_cv) # Initial State for CV
 m2x_0 = std_feed * std_feed * torch.eye(m_bb) # Initial Covariance for feeding to filters and KNet
 m2x_0_gen = std_gen * std_gen * torch.eye(m_bb) # Initial Covariance for generating dataset
@@ -114,28 +103,14 @@ Train_Loss_On_AllState = False # if false: only calculate training loss on posit
 CV_model = False # if true: use CV model, else: use CA model
 
 DatafolderName = 'Simulations/Linear_CA/data/'
-DatafileName = '7x7_rq020_T100_KN_U.pt'
-
-# DatafileName = '7x7_rq020_T100_KN1.pt'
+DatafileName = '7x7_T50.pt'
 
 
 ####################
 ### System Model ###
 ####################
-# Generation model (CA)
-# sys_model_gen = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
-# sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
 sys_model_gen = SystemModel(F_genbb, Q_bb, H_identity, R_7, args.T, args.T_test)
 sys_model_gen.InitSequence(m1x_0, m2x_0_gen)# x0 and P0
-
-# Feed model (to KF, KalmanNet) 
-# if CV_model:
-#    H_onlyPos = torch.tensor([[1, 0]]).float()
-#    sys_model = SystemModel(F_CV, Q_CV, H_onlyPos, R_onlyPos, args.T, args.T_test)
-#    sys_model.InitSequence(m1x_0_cv, m2x_0_cv)# x0 and P0
-# else:
-#    sys_model = SystemModel(F_gen, Q_gen, H_onlyPos, R_onlyPos, args.T, args.T_test)
-#    sys_model.InitSequence(m1x_0, m2x_0)# x0 and P0
 
 if CV_model:
    H_onlyPos = torch.tensor([[1, 0]]).float()
@@ -151,24 +126,6 @@ else:
 # print("Load Original Data")
 # [train_input, train_target, cv_input, cv_target, test_input, test_target, train_init, cv_init, test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
 
-                                                                                                                       
-# if CV_model:# set state as (p,v) instead of (p,v,a)
-#    print("Load Original Data")
-#    [train_input, train_target, cv_input, cv_target, test_input, test_target,train_init,cv_init,test_init] = torch.load(DatafolderName+DatafileName, map_location=device)
-#    train_target = train_target[:,0:m_cv,:]
-#    train_init = train_init[:,0:m_cv]
-#    cv_target = cv_target[:,0:m_cv,:]
-#    cv_init = cv_init[:,0:m_cv]
-#    test_target = test_target[:,0:m_cv,:]
-#    test_init = test_init[:,0:m_cv]
-# else:
-#    print("Load Original Data")
-#    [train_input, train_target, cv_input, cv_target, test_input, test_target] = torch.load(DatafolderName+DatafileName, map_location=device)
-
-
-# print(train_input)
-# print(train_target)
-
 # print("Data Shape")
 # print("testset state x size:",test_target.size())
 # print("testset observation y size:",test_input.size())
@@ -178,15 +135,15 @@ else:
 # print("cvset observation y size:",cv_input.size())
 
 # print("Compute Loss on All States (if false, loss on position only):", Loss_On_AllState)
-# print(train_input[0])
+
 ##############################
 ### Evaluate Kalman Filter ###
 ##############################
-# print("Evaluate Kalman Filter")
-# if args.randomInit_test and KnownRandInit_test:
-#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
-# else: 
-#    [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState)
+print("Evaluate Kalman Filter")
+if args.randomInit_test and KnownRandInit_test:
+   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState, randomInit = True, test_init=test_init)
+else: 
+   [MSE_KF_linear_arr, MSE_KF_linear_avg, MSE_KF_dB_avg, KF_out] = KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState)
 
 ##########################
 ### Evaluate KalmanNet ###

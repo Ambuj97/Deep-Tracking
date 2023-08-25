@@ -176,25 +176,6 @@ class SystemModel:
                 ### if Uniform Distribution for random init
                 for i in range(size):
 
-                    # hLowerBound = 0
-                    # hUpperBound = 100
-                    # wLowerBound = 0
-                    # wUpperBound = 50
-
-                    # posLowerBound = 250
-                    # posUpperBound = 500
-
-                    # height = (hUpperBound - hLowerBound) * torch.rand(1) + hLowerBound
-                    # width = (wUpperBound - wLowerBound) * torch.rand(1) + wLowerBound
-
-                    # position = (posUpperBound - posLowerBound) * torch.rand(2) + posLowerBound
-                    # scale = width*height
-                    # aspectRatio = width/height
-                    
-                    # print(position, scale, aspectRatio)
-
-                    # print(self.m1x_0)
-                    # initConditions = torch.tensor([position[0], position[1], scale, aspectRatio, 0, 0, 0])
                     initConditions = torch.rand_like(self.m1x_0) * args.variance
                     # print(initConditions)
                     self.m1x_0_rand[i,:,0:1] = initConditions.view(self.m,1)
@@ -239,10 +220,6 @@ class SystemModel:
                 self.lengthMask[i, 0:T_tensor[i].item()] = True
 
         else:
-            # print('line 222 - else')
-            # Allocate Empty Array for Input
-            # print(size, self.n, T)
-            # print(size, self.m, T)
             self.Input = torch.empty(size, self.n, T)
             # Allocate Empty Array for Target
             self.Target = torch.empty(size, self.m, T)

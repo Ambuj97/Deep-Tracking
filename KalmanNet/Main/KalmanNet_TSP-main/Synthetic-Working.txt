@@ -1,0 +1,21 @@
+Execution steps:
+To execute the program and observe the results, please carry out the following steps:
+	1) Navigate to main_linear_CA.py file. This is the main file that has to be run.
+		1.1) Set values:
+			args.N_E = 1000
+			args.N_CV = 100
+			args.N_T = 200
+			args.T = 50 or 100 depending on the synthetic dataset being tested
+			args.T_test = 50 or 100 depending on the synthetic dataset being tested
+			args.n_steps = set number of epochs as required (default is set to 1000)
+			args.lr = set learning rate as required (default is set to 1e-3)
+			DatafileName = '7x7_T50.pt' or '7x7_T100.pt' depending on the synthetic dataset being tested
+		1.2) Comment in the lines 126 and 127 to load the synthetic dataset from respective PyTorch files.
+		1.3) To evaluate Traditional Kalman Filter:
+			pass test_input and test_target tensors to the KFTest() method (line number 146) like this - KFTest(args, sys_model, test_input, test_target, allStates=Loss_On_AllState)
+		1.4) To train KalmanNet:
+			pass train_input, train_target, cv_input, cv_target tensors to KNet_Pipeline.NNTrain() method (line number 169) like this - KNet_Pipeline.NNTrain(sys_model, train_input, train_target, cv_input, cv_target, path_results, MaskOnState=not Train_Loss_On_AllState)
+		1.5) To test KalmanNet:
+			pass test_input and test_target tensors to KNet_Pipeline.NNTest() method (line number 185) like this - KNet_Pipeline.NNTest(sys_model, test_input, test_target, path_results,MaskOnState=not Loss_On_AllState)
+		
+		1.6) Once these changes are made, the file can be run to observe the results.

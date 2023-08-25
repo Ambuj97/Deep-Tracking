@@ -1,0 +1,24 @@
+Preprocessing MOT17-02 dataset:
+	- The preprocessing of MOT17-02 dataset as described in the thesis is carried out in preprocess_MOT.py file. It returns the training input and label tensors. The testing is done
+	on the same dataset to observe the behaviour of the model.
+
+
+Execution steps:
+To execute the program and observe the results, please carry out the following steps:
+	1) Navigate to main_linear_CA.py file. This is the main file that has to be run.
+		1.1) Set values:
+			args.N_E = 83
+			args.N_CV = 83
+			args.N_T = 83
+			args.T = 599
+			args.T_test = 599
+			args.n_steps = set number of epochs as required (default is set to 1000)
+			args.lr = set learning rate as required (default is set to 1e-3)
+		1.2) To evaluate Traditional Kalman Filter:
+			pass trainInput and trainOutput tensors to the KFTest() method (line number 146) like this - KFTest(args, sys_model, trainInput, trainOutput, allStates=Loss_On_AllState)
+		1.3) To train KalmanNet:
+			pass trainInput and trainOutput tensors to KNet_Pipeline.NNTrain() method (line number 169) like this - KNet_Pipeline.NNTrain(sys_model, trainInput, trainOutput, trainInput, trainOutput, path_results, MaskOnState=not Train_Loss_On_AllState)
+		1.4) To test KalmanNet:
+			pass trainInput and trainOutput tensors to KNet_Pipeline.NNTest() method (line number 185) like this - KNet_Pipeline.NNTest(sys_model, trainInput, trainOutput, path_results,MaskOnState=not Loss_On_AllState)
+		
+		1.5) Once these changes are made, the file can be run to observe the results.
